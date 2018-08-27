@@ -5,7 +5,8 @@ module TypedRuby
 
       def initialize(name:, own_methods:, included_modules:, prepended_modules:)
         @name = name
-        @own_methods = own_methods
+        @own_methods = []
+        own_methods.each { |sig| define_method(sig) }
         @included_modules = included_modules
         @prepended_modules = prepended_modules
       end
@@ -39,6 +40,7 @@ module TypedRuby
       end
 
       def define_method(sig)
+        sig.bind(self)
         @own_methods << sig
       end
 
