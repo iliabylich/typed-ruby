@@ -10,6 +10,10 @@ module TypedRuby
       def ==(other)
         other.is_a?(InstanceOf) && name == other.name
       end
+
+      def inspect
+        "InstanceOf(#{name})"
+      end
     end
   end
 end

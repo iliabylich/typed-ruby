@@ -2,6 +2,7 @@ module TypedRuby
   class Registry
     def initialize
       @modules = []
+      @classes = []
       @constants = []
       @gvars = []
 
@@ -12,7 +13,9 @@ module TypedRuby
       @modules << sig
     end
 
-    alias register_class register_module
+    def register_class(sig)
+      @classes << sig
+    end
 
     def register_constant(sig)
       @constants << sig
@@ -23,10 +26,14 @@ module TypedRuby
     end
 
     def find_module(module_name)
-      @modules.detect { |mod| mod.name == module_name }
+      @modules.detect { |sig| sig.name == module_name } ||
+        raise("Module #{module_name} is not registered")
     end
 
-    alias find_class find_module
+    def find_class(class_name)
+      @classes.detect { |sig| sig.name == class_name } ||
+        raise("Class #{class_name} is not registered")
+    end
 
     private
 
@@ -34,7 +41,7 @@ module TypedRuby
       root = File.expand_path('../../../types', __FILE__)
 
       load(File.join(root, 'corelib/basic_object.rb'))
-      # load(File.join(root, 'corelib/object.rb'))
+      load(File.join(root, 'corelib/object.rb'))
       # load(File.join(root, 'corelib/class.rb'))
       # load(File.join(root, 'corelib/module.rb'))
 

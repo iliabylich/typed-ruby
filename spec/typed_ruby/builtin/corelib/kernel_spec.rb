@@ -1,7 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe 'Types: Kernel', type: 'Kernel' do
-  include TypeHelper
+RSpec.describe 'Types: Kernel' do
+  include RegistryHelper
+  let(:signature) { find_module('Kernel') }
 
   # !~
   # <=>
@@ -30,16 +31,24 @@ RSpec.describe 'Types: Kernel', type: 'Kernel' do
   # method
   # methods
 
-  describe '#nil?', method: 'nil?' do
-    it_is_defined
-    it_takes      { [] }
-    it_returns    { instance_of('Boolean') }
+  describe '#nil?' do
+    subject(:method) { signature.find_method('nil?') }
+
+    it {
+      is_expected.to be_defined
+        .and take_arguments([])
+        .and return_type(instance_of('Boolean'))
+    }
   end
 
-  describe '#object_id', method: 'object_id' do
-    it_is_defined
-    it_takes      { [] }
-    it_returns    { instance_of('Integer') }
+  describe '#object_id' do
+    subject(:method) { signature.find_method('object_id') }
+
+    it {
+      is_expected.to be_defined
+        .and take_arguments([])
+        .and return_type(instance_of('Integer'))
+    }
   end
 
   # pp

@@ -30,7 +30,7 @@ register_class(
         returns: Types::InstanceOf.new('Integer')
       ),
 
-      # __send__
+      Signatures::AnyMethod.new(name: '__send__'),
 
       Signatures::Method.new(
         name: 'equal?',
@@ -38,7 +38,11 @@ register_class(
         returns: Types::InstanceOf.new('Boolean')
       ),
 
-      # instance_eval
+      Signatures::AnyMethod.new(name: 'instance_eval'),
+      Signatures::AnyMethod.new(name: 'instance_exec'),
+      Signatures::AnyMethod.new(name: 'method_missing'),
+      Signatures::AnyMethod.new(name: 'singleton_method_added'),
+      Signatures::AnyMethod.new(name: 'singleton_method_removed'),
 
     ]
   )

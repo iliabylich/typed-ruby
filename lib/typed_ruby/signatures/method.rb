@@ -9,5 +9,13 @@ module TypedRuby
         @returns = returns
       end
     end
+
+    class AnyMethod
+      attr_reader :name
+
+      def initialize(name:)
+        @name = name
+      end
+    end
   end
 end

@@ -1,77 +1,98 @@
 require 'spec_helper'
 
-RSpec.describe 'Types: BasicObject', type: 'BasicObject' do
-  include TypeHelper
+RSpec.describe 'Types: BasicObject' do
+  include RegistryHelper
+  let(:signature) { find_class('BasicObject') }
 
-  describe '#!', method: '!' do
-    it_is_defined
-    it_takes      { [] }
-    it_returns    { instance_of('Boolean') }
+  describe '#!' do
+    subject(:method) { signature.find_method('!') }
+
+    it {
+      is_expected.to be_defined
+        .and take_arguments([])
+        .and return_type(instance_of('Boolean'))
+    }
   end
 
-  describe '#!=', method: '!=' do
-    it_is_defined
-    it_takes      { [any] }
-    it_returns    { instance_of('Boolean') }
+  describe '#!=' do
+    subject(:method) { signature.find_method('!=') }
+
+    it {
+      is_expected.to be_defined
+        .and take_arguments([any])
+        .and return_type(instance_of('Boolean'))
+    }
   end
 
-  describe '#==', method: '==' do
-    it_is_defined
-    it_takes      { [any] }
-    it_returns    { instance_of('Boolean') }
+  describe '#==' do
+    subject(:method) { signature.find_method('==') }
+
+    it {
+      is_expected.to be_defined
+        .and take_arguments([any])
+        .and return_type(instance_of('Boolean'))
+    }
   end
 
-  describe '#__id__', method: '__id__' do
-    it_is_defined
-    it_takes      { [] }
-    it_returns    { instance_of('Integer') }
+  describe '#__id__' do
+    subject(:method) { signature.find_method('__id__') }
+
+    it {
+      is_expected.to be_defined
+        .and take_arguments([])
+        .and return_type(instance_of('Integer'))
+    }
   end
 
-  # describe '#__send__', method: '__send__' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+  describe '#__send__' do
+    subject(:method) { signature.find_method('__send__') }
 
-  describe '#equal?', method: 'equal?' do
-    it_is_defined
-    it_takes      { [any] }
-    it_returns    { instance_of('Boolean') }
+    it { is_expected.to be_any_method }
   end
 
-  # describe '#instance_eval', method: 'instance_eval' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+  describe '#equal?' do
+    subject(:method) { signature.find_method('equal?') }
 
-  # describe '#instance_exec', method: 'instance_exec' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+    it {
+      is_expected.to be_defined
+        .and take_arguments([any])
+        .and return_type(instance_of('Boolean'))
+    }
+  end
 
-  # describe '#method_missing', method: 'method_missing' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+  describe '#instance_eval' do
+    subject(:method) { signature.find_method('instance_eval') }
 
-  # describe '#singleton_method_added', method: 'singleton_method_added' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+    it { is_expected.to be_any_method }
+  end
 
-  # describe '#singleton_method_removed', method: 'singleton_method_removed' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+  describe '#instance_exec' do
+    subject(:method) { signature.find_method('instance_exec') }
 
-  # describe '#singleton_method_undefined', method: 'singleton_method_undefined' do
-  #   it_is_defined
-  #   it_takes      { [] }
-  #   it_returns    { instance_of('Boolean') }
-  # end
+    it { is_expected.to be_any_method }
+  end
+
+  describe '#method_missing' do
+    subject(:method) { signature.find_method('method_missing') }
+
+    it { is_expected.to be_any_method }
+  end
+
+  describe '#singleton_method_added' do
+    subject(:method) { signature.find_method('singleton_method_added') }
+
+    it { is_expected.to be_any_method }
+  end
+
+  describe '#singleton_method_removed' do
+    subject(:method) { signature.find_method('singleton_method_removed') }
+
+    it { is_expected.to be_any_method }
+  end
+
+  describe '#singleton_method_undefined' do
+    subject(:method) { signature.find_method('__send__') }
+
+    it { is_expected.to be_any_method }
+  end
 end
