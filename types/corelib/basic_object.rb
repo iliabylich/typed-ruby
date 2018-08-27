@@ -14,13 +14,17 @@ register_class(
 
       Signatures::Method.new(
         name: '!=',
-        arguments: [Types::ANY],
+        arguments: [
+          Signatures::Arguments::Required.new(name: 'other', type: Types::ANY)
+        ],
         returns: Types::InstanceOf.new('Boolean')
       ),
 
       Signatures::Method.new(
         name: '==',
-        arguments: [Types::ANY],
+        arguments: [
+          Signatures::Arguments::Required.new(name: 'other', type: Types::ANY)
+        ],
         returns: Types::InstanceOf.new('Boolean')
       ),
 
@@ -34,7 +38,9 @@ register_class(
 
       Signatures::Method.new(
         name: 'equal?',
-        arguments: [Types::ANY],
+        arguments: [
+          Signatures::Arguments::Required.new(name: 'other', type: Types::ANY)
+        ],
         returns: Types::InstanceOf.new('Boolean')
       ),
 

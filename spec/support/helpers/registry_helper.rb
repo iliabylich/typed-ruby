@@ -31,7 +31,8 @@ module RegistryHelper
 
   matcher :take_arguments do |expected_arguments|
     match do |method_signature|
-      method_signature.arguments == expected_arguments
+      unwrapped = method_signature.arguments.map(&:type)
+      unwrapped == expected_arguments
     end
   end
 
