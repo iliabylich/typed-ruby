@@ -2,10 +2,10 @@ require 'spec_helper'
 
 RSpec.describe 'Types: BasicObject' do
   include RegistryHelper
-  let(:signature) { find_class('BasicObject') }
+  let(:klass) { find_class('BasicObject') }
 
   describe '#!' do
-    subject(:method) { signature.find_method('!') }
+    subject(:method) { klass.find_method('!') }
 
     it {
       is_expected.to be_defined
@@ -15,7 +15,7 @@ RSpec.describe 'Types: BasicObject' do
   end
 
   describe '#!=' do
-    subject(:method) { signature.find_method('!=') }
+    subject(:method) { klass.find_method('!=') }
 
     it {
       is_expected.to be_defined
@@ -25,7 +25,7 @@ RSpec.describe 'Types: BasicObject' do
   end
 
   describe '#==' do
-    subject(:method) { signature.find_method('==') }
+    subject(:method) { klass.find_method('==') }
 
     it {
       is_expected.to be_defined
@@ -35,7 +35,7 @@ RSpec.describe 'Types: BasicObject' do
   end
 
   describe '#__id__' do
-    subject(:method) { signature.find_method('__id__') }
+    subject(:method) { klass.find_method('__id__') }
 
     it {
       is_expected.to be_defined
@@ -45,13 +45,13 @@ RSpec.describe 'Types: BasicObject' do
   end
 
   describe '#__send__' do
-    subject(:method) { signature.find_method('__send__') }
+    subject(:method) { klass.find_method('__send__') }
 
     it { is_expected.to be_any_method }
   end
 
   describe '#equal?' do
-    subject(:method) { signature.find_method('equal?') }
+    subject(:method) { klass.find_method('equal?') }
 
     it {
       is_expected.to be_defined
@@ -61,37 +61,37 @@ RSpec.describe 'Types: BasicObject' do
   end
 
   describe '#instance_eval' do
-    subject(:method) { signature.find_method('instance_eval') }
+    subject(:method) { klass.find_method('instance_eval') }
 
     it { is_expected.to be_any_method }
   end
 
   describe '#instance_exec' do
-    subject(:method) { signature.find_method('instance_exec') }
+    subject(:method) { klass.find_method('instance_exec') }
 
     it { is_expected.to be_any_method }
   end
 
   describe '#method_missing' do
-    subject(:method) { signature.find_method('method_missing') }
+    subject(:method) { klass.find_method('method_missing') }
 
     it { is_expected.to be_any_method }
   end
 
   describe '#singleton_method_added' do
-    subject(:method) { signature.find_method('singleton_method_added') }
+    subject(:method) { klass.find_method('singleton_method_added') }
 
     it { is_expected.to be_any_method }
   end
 
   describe '#singleton_method_removed' do
-    subject(:method) { signature.find_method('singleton_method_removed') }
+    subject(:method) { klass.find_method('singleton_method_removed') }
 
     it { is_expected.to be_any_method }
   end
 
   describe '#singleton_method_undefined' do
-    subject(:method) { signature.find_method('__send__') }
+    subject(:method) { klass.find_method('__send__') }
 
     it { is_expected.to be_any_method }
   end

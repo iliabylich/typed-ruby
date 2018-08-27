@@ -14,6 +14,10 @@ module TypedRuby
       def find_method(method_name)
         methods.detect { |method| method.name == method_name }
       end
+
+      def inspect
+        name
+      end
     end
   end
 end

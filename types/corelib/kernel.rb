@@ -20,3 +20,5 @@ register_module(
     ]
   )
 )
+
+find_class('Object').included_modules << find_module('Kernel')

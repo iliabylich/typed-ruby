@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'Types: Kernel' do
   include RegistryHelper
-  let(:signature) { find_module('Kernel') }
+  let(:mod) { find_module('Kernel') }
 
   # !~
   # <=>
@@ -32,7 +32,7 @@ RSpec.describe 'Types: Kernel' do
   # methods
 
   describe '#nil?' do
-    subject(:method) { signature.find_method('nil?') }
+    subject(:method) { mod.find_method('nil?') }
 
     it {
       is_expected.to be_defined
@@ -42,7 +42,7 @@ RSpec.describe 'Types: Kernel' do
   end
 
   describe '#object_id' do
-    subject(:method) { signature.find_method('object_id') }
+    subject(:method) { mod.find_method('object_id') }
 
     it {
       is_expected.to be_defined

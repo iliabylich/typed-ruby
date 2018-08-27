@@ -46,4 +46,10 @@ module RegistryHelper
       method_signature.is_a?(TypedRuby::Signatures::AnyMethod)
     end
   end
+
+  matcher :have_included do |expected_module|
+    match do |class_signature|
+      class_signature.included_modules.include?(expected_module)
+    end
+  end
 end
