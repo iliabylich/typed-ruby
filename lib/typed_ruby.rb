@@ -6,6 +6,7 @@ module TypedRuby
     require 'typed_ruby/signatures/method'
     require 'typed_ruby/signatures/module'
     require 'typed_ruby/signatures/class'
+    require 'typed_ruby/signatures/sclass'
   end
 
   module Types

@@ -3,12 +3,15 @@ module TypedRuby
     class Module
       attr_reader :name, :own_methods, :included_modules, :prepended_modules
 
-      def initialize(name:, own_methods:, included_modules:, prepended_modules:)
+      def initialize(name:, own_methods:, sclass_methods:, included_modules:, prepended_modules:)
         @name = name
-        @own_methods = []
-        own_methods.each { |sig| define_method(sig) }
         @included_modules = included_modules
         @prepended_modules = prepended_modules
+
+        @own_methods = []
+        own_methods.each { |sig| define_method(sig) }
+
+        sclass_methods.each { |sig| sclass.define_method(sig) }
       end
 
       def find_method(method_name)
@@ -19,6 +22,10 @@ module TypedRuby
         end
 
         nil
+      end
+
+      def sclass
+        @sclass ||= Signatures::SClass.new(of: self)
       end
 
       def ancestors

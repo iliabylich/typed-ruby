@@ -38,6 +38,7 @@ registry.register_module(
     name: 'M',
     included_modules: [],
     prepended_modules: [],
+    sclass_methods: [],
     own_methods: [
       TypedRuby::Signatures::Method.new(
         name: 'module_method',
@@ -66,8 +67,14 @@ registry.register_class(
         ],
         returns: TypedRuby::Types::InstanceOf.new('Integer')
       )
-
-    ]
+    ],
+    sclass_methods: [
+      TypedRuby::Signatures::Method.new(
+        name: 'class_method1',
+        arguments: [],
+        returns: TypedRuby::Types::InstanceOf.new('Array')
+      )
+    ],
   )
 )
 

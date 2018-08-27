@@ -4,6 +4,7 @@ register_class(
     superclass: nil,
     included_modules: [],
     prepended_modules: [],
+    sclass_methods: [],
     own_methods: [
 
       Signatures::Method.new(

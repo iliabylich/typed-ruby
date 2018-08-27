@@ -3,6 +3,7 @@ register_module(
     name: 'Kernel',
     included_modules: [],
     prepended_modules: [],
+    sclass_methods: [],
     own_methods: [
       Signatures::AnyMethod.new(name: '!~'),
       Signatures::AnyMethod.new(name: '<=>'),
