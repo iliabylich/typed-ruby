@@ -16,6 +16,14 @@ module TypedRuby
       def initialize(name:)
         @name = name
       end
+
+      def arguments
+        '<Any Arguments>'
+      end
+
+      def returns
+        Types::ANY
+      end
     end
   end
 end
