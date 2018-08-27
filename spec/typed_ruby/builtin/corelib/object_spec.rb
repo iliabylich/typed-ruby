@@ -5,12 +5,6 @@ RSpec.describe 'Types: Object' do
 
   subject(:klass) { find_class('Object') }
 
-  its(:ancestors) {
-    is_expected.to eq([
-      find_class('Object'),
-      find_module('Kernel'),
-      find_class('BasicObject')
-    ])
-  }
+  it { is_expected.to have_ancestors( find_class('Object'), find_module('Kernel'), find_class('BasicObject') ) }
   its(:own_methods) { is_expected.to eq([]) }
 end

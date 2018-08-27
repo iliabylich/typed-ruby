@@ -48,8 +48,14 @@ module RegistryHelper
   end
 
   matcher :have_included do |expected_module|
-    match do |class_signature|
-      class_signature.included_modules.include?(expected_module)
+    match do |module_signature|
+      module_signature.included_modules.include?(expected_module)
+    end
+  end
+
+  matcher :have_ancestors do |*expected_ancestors|
+    match do |module_signature|
+      module_signature.ancestors == expected_ancestors
     end
   end
 end

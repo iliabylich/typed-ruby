@@ -42,8 +42,8 @@ module TypedRuby
 
       load(File.join(root, 'corelib/basic_object.rb'))
       load(File.join(root, 'corelib/object.rb'))
+      load(File.join(root, 'corelib/module.rb'))
       # load(File.join(root, 'corelib/class.rb'))
-      # load(File.join(root, 'corelib/module.rb'))
 
       load(File.join(root, 'corelib/kernel.rb'))
     end

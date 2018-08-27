@@ -16,6 +16,8 @@ module TypedRuby
             return method if method.name == method_name
           end
         end
+
+        nil
       end
 
       def ancestors
@@ -34,6 +36,10 @@ module TypedRuby
       def prepend(mod)
         @prepended_modules << mod
         @ancestors = nil
+      end
+
+      def define_method(sig)
+        @own_methods << sig
       end
 
       def inspect

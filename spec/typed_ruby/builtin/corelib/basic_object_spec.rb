@@ -5,7 +5,7 @@ RSpec.describe 'Types: BasicObject' do
 
   subject(:klass) { find_class('BasicObject') }
 
-  its(:ancestors) { is_expected.to eq([ find_class('BasicObject') ]) }
+  it { is_expected.to have_ancestors( find_class('BasicObject') ) }
 
   describe '#!' do
     subject(:method) { klass.find_method('!') }
