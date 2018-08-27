@@ -8,6 +8,10 @@ module TypedRuby
         @arguments = arguments
         @returns = returns
       end
+
+      def inspect
+        "def #{name}(#{arguments.map(&:inspect).join(', ')}): #{returns.inspect}"
+      end
     end
 
     class AnyMethod

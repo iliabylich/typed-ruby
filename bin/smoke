@@ -5,3 +5,70 @@ require 'typed_ruby'
 require 'pry'
 
 registry = TypedRuby::Registry.new
+source = <<-RUBY
+
+  module M
+    def module_method
+      123
+    end
+  end
+
+  class A
+    include M
+
+    def instance_method(s)
+      s + 'string'
+    end
+
+    def self.class_method1
+      [1, 2, 3]
+    end
+
+    class << self
+      def class_method2
+        { key: 'value' }
+      end
+    end
+  end
+
+RUBY
+
+registry.register_module(
+  TypedRuby::Signatures::Module.new(
+    name: 'M',
+    included_modules: [],
+    prepended_modules: [],
+    own_methods: [
+      TypedRuby::Signatures::Method.new(
+        name: 'module_method',
+        arguments: [],
+        returns: TypedRuby::Types::InstanceOf.new('Integer')
+      )
+    ]
+  )
+)
+
+registry.register_class(
+  TypedRuby::Signatures::Class.new(
+    name: 'A',
+    superclass: registry.find_class('Object'),
+    included_modules: [registry.find_module('M')],
+    prepended_modules: [],
+    own_methods: [
+
+      TypedRuby::Signatures::Method.new(
+        name: 'instance_method',
+        arguments: [
+          TypedRuby::Signatures::Arguments::Required.new(
+            name: 's',
+            type: TypedRuby::Types::InstanceOf.new('String')
+          )
+        ],
+        returns: TypedRuby::Types::InstanceOf.new('Integer')
+      )
+
+    ]
+  )
+)
+
+binding.pry

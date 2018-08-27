@@ -16,6 +16,10 @@ module TypedRuby
           *(superclass ? superclass.ancestors : [])
         ]
       end
+
+      def inspect
+        "ClassType<#{name}>"
+      end
     end
   end
 end

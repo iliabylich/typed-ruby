@@ -43,7 +43,7 @@ module TypedRuby
       end
 
       def inspect
-        "Type<#{name}>"
+        "ModuleType<#{name}>"
       end
     end
   end
