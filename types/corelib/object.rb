@@ -4,7 +4,7 @@ register_class(
     superclass: find_class('BasicObject'),
     included_modules: [],
     prepended_modules: [],
-    methods: [
+    own_methods: [
     ]
   )
 )

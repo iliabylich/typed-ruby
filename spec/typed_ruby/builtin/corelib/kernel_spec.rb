@@ -2,7 +2,9 @@ require 'spec_helper'
 
 RSpec.describe 'Types: Kernel' do
   include RegistryHelper
-  let(:mod) { find_module('Kernel') }
+  subject(:mod) { find_module('Kernel') }
+
+  its(:ancestors) { is_expected.to eq([ find_module('Kernel') ]) }
 
   # !~
   # <=>

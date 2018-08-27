@@ -4,6 +4,12 @@ RSpec.describe 'Types: Object' do
   include RegistryHelper
   subject(:klass) { find_class('Object') }
 
-  it { is_expected.to have_included(find_module('Kernel')) }
-  its(:methods) { is_expected.to eq([]) }
+  its(:ancestors) {
+    is_expected.to eq([
+      find_class('Object'),
+      find_module('Kernel'),
+      find_class('BasicObject')
+    ])
+  }
+  its(:own_methods) { is_expected.to eq([]) }
 end

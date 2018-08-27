@@ -3,7 +3,7 @@ register_module(
     name: 'Kernel',
     included_modules: [],
     prepended_modules: [],
-    methods: [
+    own_methods: [
 
       Signatures::Method.new(
         name: 'nil?',
@@ -21,4 +21,4 @@ register_module(
   )
 )
 
-find_class('Object').included_modules << find_module('Kernel')
+find_class('Object').include(find_module('Kernel'))
