@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'typed_ruby'
+require 'pry'
+
+registry = TypedRuby::Registry.new
