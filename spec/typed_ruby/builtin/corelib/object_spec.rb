@@ -2,6 +2,7 @@ require 'spec_helper'
 
 RSpec.describe 'Types: Object' do
   include RegistryHelper
+
   subject(:klass) { find_class('Object') }
 
   its(:ancestors) {

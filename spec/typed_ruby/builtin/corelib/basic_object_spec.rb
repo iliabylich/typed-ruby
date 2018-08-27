@@ -2,7 +2,9 @@ require 'spec_helper'
 
 RSpec.describe 'Types: BasicObject' do
   include RegistryHelper
+
   subject(:klass) { find_class('BasicObject') }
+
   its(:ancestors) { is_expected.to eq([ find_class('BasicObject') ]) }
 
   describe '#!' do
