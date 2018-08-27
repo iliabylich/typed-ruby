@@ -9,8 +9,8 @@ module TypedRuby
   end
 
   module Types
-    ANY = Object.new.freeze
-    VOID = Object.new.freeze
+    require 'typed_ruby/types/any'
+    require 'typed_ruby/types/void'
     require 'typed_ruby/types/instance_of'
   end
 
