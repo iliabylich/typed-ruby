@@ -15,5 +15,9 @@ module TypedRuby
     require 'typed_ruby/types/instance_of'
   end
 
+  module AST
+    require 'typed_ruby/ast/parser'
+  end
+
   require 'typed_ruby/registry'
 end

@@ -78,4 +78,6 @@ registry.register_class(
   )
 )
 
+ast = TypedRuby::AST::Parser.new(file: 'eval', source: source).parse
+
 binding.pry
