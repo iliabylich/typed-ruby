@@ -1,7 +1,7 @@
 module TypedRuby
   module Signatures
     class Method
-      attr_reader :name, :arguments, :returns
+      attr_reader :name, :arguments, :returns, :mod
 
       def initialize(name:, arguments:, returns:)
         @name = name

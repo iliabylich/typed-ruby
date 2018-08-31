@@ -24,11 +24,11 @@ source = <<-RUBY
       [1, 2, 3]
     end
 
-    class << self
-      def class_method2
-        { key: 'value' }
-      end
-    end
+    # class << self
+    #   def class_method2
+    #     { key: 'value' }
+    #   end
+    # end
   end
 
 RUBY
@@ -79,5 +79,9 @@ registry.register_class(
 )
 
 ast = TypedRuby::AST::Parser.new(file: 'eval', source: source).parse
+
+reducer = TypedRuby::AST::Reducer.new(ast: ast, registry: registry)
+
+result = reducer.result
 
 binding.pry
