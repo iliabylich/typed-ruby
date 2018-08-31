@@ -46,6 +46,8 @@ module TypedRuby
       load(File.join(root, 'corelib/class.rb'))
 
       load(File.join(root, 'corelib/kernel.rb'))
+
+      load(File.join(root, 'corelib/string.rb'))
     end
 
     def load(path)

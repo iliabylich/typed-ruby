@@ -1,6 +1,6 @@
 module TypedRuby
   module Types
-    class InstanceOf
+    class InstanceOf < Reduced
       attr_reader :name
 
       def initialize(name)

@@ -20,7 +20,7 @@ module TypedRuby
         end
 
         def replace(from, to)
-          puts "Converting #{from} to #{to.inspect}"
+          puts "Substitution: #{from} -> #{to.inspect}"
           to
         end
 

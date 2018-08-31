@@ -4,6 +4,7 @@ module TypedRuby
   module Helpers
     require 'typed_ruby/helpers/constant_name'
     require 'typed_ruby/helpers/method_signature_match'
+    require 'typed_ruby/helpers/send_signature_match'
   end
 
   module Signatures
@@ -15,6 +16,7 @@ module TypedRuby
   end
 
   module Types
+    require 'typed_ruby/types/reduced'
     require 'typed_ruby/types/any'
     require 'typed_ruby/types/void'
     require 'typed_ruby/types/instance_of'
@@ -26,9 +28,12 @@ module TypedRuby
 
     module Substitutions
       require 'typed_ruby/ast/substitutions/base'
+      require 'typed_ruby/ast/substitutions/scoped'
+
       require 'typed_ruby/ast/substitutions/primitives'
       require 'typed_ruby/ast/substitutions/arguments'
       require 'typed_ruby/ast/substitutions/explicit'
+      require 'typed_ruby/ast/substitutions/send'
     end
   end
 

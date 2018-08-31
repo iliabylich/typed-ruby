@@ -1,6 +1,6 @@
 module TypedRuby
   module Types
-    class Void
+    class Void < Reduced
       def inspect
         "Void"
       end

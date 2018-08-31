@@ -1,6 +1,6 @@
 module TypedRuby
   module Types
-    class Any
+    class Any < Reduced
       def inspect
         "Any"
       end

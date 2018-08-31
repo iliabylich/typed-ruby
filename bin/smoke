@@ -7,22 +7,22 @@ require 'pry'
 registry = TypedRuby::Registry.new
 source = <<-RUBY
 
-  module M
-    def module_method
-      123
-    end
-  end
+  # module M
+  #   def module_method
+  #     123
+  #   end
+  # end
 
   class A
-    include M
+    # include M
 
     def instance_method(s)
       s + 'string'
     end
 
-    def self.class_method1
-      [1, 2, 3]
-    end
+    # def self.class_method1
+    #   [1, 2, 3]
+    # end
 
     # class << self
     #   def class_method2
