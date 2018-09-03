@@ -3,12 +3,20 @@ require "typed_ruby/version"
 module TypedRuby
   module Helpers
     require 'typed_ruby/helpers/constant_name'
-    require 'typed_ruby/helpers/parameters_of_method_ast'
-    require 'typed_ruby/helpers/parameters_of_method_signature'
-    require 'typed_ruby/helpers/send_signature_match'
+    require 'typed_ruby/helpers/reduced_arglist'
   end
 
   module Signatures
+    require 'typed_ruby/signatures/arguments/base'
+    require 'typed_ruby/signatures/arguments/block'
+    require 'typed_ruby/signatures/arguments/keyword'
+    require 'typed_ruby/signatures/arguments/keyword_optional'
+    require 'typed_ruby/signatures/arguments/keyword_rest'
+    require 'typed_ruby/signatures/arguments/optional'
+    require 'typed_ruby/signatures/arguments/post'
+    require 'typed_ruby/signatures/arguments/required'
+    require 'typed_ruby/signatures/arguments/rest'
+
     require 'typed_ruby/signatures/arguments'
     require 'typed_ruby/signatures/method'
     require 'typed_ruby/signatures/module'

@@ -45,7 +45,7 @@ module TypedRuby
         end
 
         def reduced?(node)
-          Types::Reduced === node
+          Types::Reduced === node && node != Types::ANY
         end
       end
     end

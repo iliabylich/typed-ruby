@@ -11,7 +11,7 @@ module TypedRuby
       end
 
       def inspect
-        "def #{@mod.name} #{name}(#{arguments.map(&:inspect).join(', ')}): #{returns.inspect}"
+        "def #{@mod.name} #{name}(#{arguments.inspect}): #{returns.inspect}"
       end
 
       def bind(mod)

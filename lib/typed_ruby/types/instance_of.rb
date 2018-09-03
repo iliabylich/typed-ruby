@@ -15,6 +15,22 @@ module TypedRuby
       def inspect
         "InstanceOf(#{type.name})"
       end
+
+      def >=(other)
+        self.type >= other.type
+      end
+
+      def >(other)
+        self.type > other.type
+      end
+
+      def <=(other)
+        self.type <= other.type
+      end
+
+      def <(other)
+        self.type < other.type
+      end
     end
   end
 end

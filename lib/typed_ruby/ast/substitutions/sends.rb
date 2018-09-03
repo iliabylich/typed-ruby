@@ -10,14 +10,14 @@ module TypedRuby
 
           can_reduce = reduced?(recv) && args.all? { |arg| reduced?(arg) }
 
+          return replace(node, Types::ANY) unless can_reduce
+
           module_sig = recv.type
           method_sig = module_sig.find_method(mid.to_s)
 
           return replace(node, Types::ANY) unless method_sig
 
-          matches = Helpers::SendSignatureMatch.new(method_sig, args).call
-
-          if matches
+          if method_sig.arguments =~ args
             replace(node, method_sig.returns)
           end
         end

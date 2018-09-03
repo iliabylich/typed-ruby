@@ -56,6 +56,22 @@ module TypedRuby
       def inspect
         "ModuleType<#{name}>"
       end
+
+      def >(other)
+        self != other && other.ancestors.include?(self)
+      end
+
+      def <(other)
+        self != other && ancestors.include?(other)
+      end
+
+      def >=(other)
+        self == other || self > other
+      end
+
+      def <=(other)
+        self == other || self < other
+      end
     end
   end
 end
