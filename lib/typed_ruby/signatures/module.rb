@@ -1,6 +1,6 @@
 module TypedRuby
   module Signatures
-    class Module < BasicObject
+    class Module
       attr_reader :name, :own_methods, :included_modules, :prepended_modules
 
       def initialize(name:)

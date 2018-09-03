@@ -6,9 +6,7 @@ module TypedRuby
           mid, args, body = *node
           method_signature = current_module_signature.find_method(mid.to_s)
 
-          matches = Helpers::MethodSignatureMatch.new(method_signature, args).call
-
-          unless matches
+          unless method_signature.matches?(args)
             raise "#{args.loc.expression.to_s}: signature #{method_signature.inspect} doesn't match #{args.loc.expression.source}"
           end
 

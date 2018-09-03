@@ -3,7 +3,8 @@ require "typed_ruby/version"
 module TypedRuby
   module Helpers
     require 'typed_ruby/helpers/constant_name'
-    require 'typed_ruby/helpers/method_signature_match'
+    require 'typed_ruby/helpers/parameters_of_method_ast'
+    require 'typed_ruby/helpers/parameters_of_method_signature'
     require 'typed_ruby/helpers/send_signature_match'
   end
 

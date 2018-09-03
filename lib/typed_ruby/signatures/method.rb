@@ -1,11 +1,11 @@
 module TypedRuby
   module Signatures
-    class Method < BasicObject
+    class Method
       attr_reader :name, :arguments, :returns, :mod
 
       def initialize(name:, arguments:, returns:)
         @name = name
-        @arguments = arguments
+        @arguments = Arguments.new(arguments)
         @returns = returns
         @mod = nil
       end
@@ -17,6 +17,14 @@ module TypedRuby
       def bind(mod)
         @mod = mod
       end
+
+      def matches?(ast)
+        @arguments.matches?(ast)
+      end
+
+      def can_receive?(ast)
+        @arguments.can_receive?(ast)
+      end
     end
 
     class AnyMethod < Method
@@ -26,16 +34,8 @@ module TypedRuby
         @name = name
       end
 
-      class AnyArgs
-        def inspect
-          '...AnyArguments'
-        end
-      end
-
-      ANY_ARGS = AnyArgs.new.freeze
-
       def arguments
-        [ANY_ARGS]
+        [Arguments::ANY]
       end
 
       def returns

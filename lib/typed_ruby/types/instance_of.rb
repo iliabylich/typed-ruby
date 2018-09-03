@@ -13,7 +13,7 @@ module TypedRuby
       end
 
       def inspect
-        "InstanceOf(#{type.inspect})"
+        "InstanceOf(#{type.name})"
       end
     end
   end

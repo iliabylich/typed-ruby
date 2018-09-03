@@ -10,8 +10,6 @@ module TypedRuby
 
           can_reduce = reduced?(recv) && args.all? { |arg| reduced?(arg) }
 
-          return unreducable(node) unless can_reduce
-
           module_sig = recv.type
           method_sig = module_sig.find_method(mid.to_s)
 
