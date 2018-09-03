@@ -3,11 +3,11 @@ module TypedRuby
     module Substitutions
       class Primitives < Base
         def on_int(node)
-          replace(node, instance_of('Integer'))
+          replace(node, instance_of(find_class('Integer')))
         end
 
         def on_str(node)
-          replace(node, instance_of('String'))
+          replace(node, instance_of(find_class('String')))
         end
       end
     end

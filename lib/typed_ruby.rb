@@ -33,7 +33,8 @@ module TypedRuby
       require 'typed_ruby/ast/substitutions/primitives'
       require 'typed_ruby/ast/substitutions/arguments'
       require 'typed_ruby/ast/substitutions/explicit'
-      require 'typed_ruby/ast/substitutions/send'
+      require 'typed_ruby/ast/substitutions/sends'
+      require 'typed_ruby/ast/substitutions/methods'
     end
   end
 

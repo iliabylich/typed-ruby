@@ -21,7 +21,7 @@ RSpec.describe 'Types: Class' do
     it {
       is_expected.to be_defined
         .and take_arguments([])
-        .and return_type(instance_of('Class'))
+        .and return_type(instance_of(find_class('Class')))
     }
   end
 
@@ -31,7 +31,7 @@ RSpec.describe 'Types: Class' do
     it {
       is_expected.to be_defined
         .and take_arguments([])
-        .and return_type(instance_of('Class'))
+        .and return_type(instance_of(find_class('Class')))
     }
   end
 
@@ -41,7 +41,7 @@ RSpec.describe 'Types: Class' do
     it {
       is_expected.to be_defined
         .and take_arguments([])
-        .and return_type(instance_of('Class'))
+        .and return_type(instance_of(find_class('Class')))
     }
   end
 end

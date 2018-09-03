@@ -1,17 +1,15 @@
 module TypedRuby
   module Signatures
-    class Module
+    class Module < BasicObject
       attr_reader :name, :own_methods, :included_modules, :prepended_modules
 
-      def initialize(name:, own_methods:, sclass_methods:, included_modules:, prepended_modules:)
+      def initialize(name:)
         @name = name
-        @included_modules = included_modules
-        @prepended_modules = prepended_modules
 
+        @included_modules = []
+        @prepended_modules = []
         @own_methods = []
-        own_methods.each { |sig| define_method(sig) }
-
-        sclass_methods.each { |sig| sclass.define_method(sig) }
+        @sclass_methods = []
       end
 
       def find_method(method_name)
@@ -49,6 +47,10 @@ module TypedRuby
       def define_method(sig)
         sig.bind(self)
         @own_methods << sig
+      end
+
+      def define_singleton_method(sig)
+        sclass.define_method(sig)
       end
 
       def inspect

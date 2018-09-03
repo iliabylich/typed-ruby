@@ -20,7 +20,7 @@ RSpec.describe 'Types: Module' do
     it {
       is_expected.to be_defined
         .and take_arguments([])
-        .and return_type(instance_of('String'))
+        .and return_type(instance_of(find_class('String')))
     }
   end
 end

@@ -1,6 +1,6 @@
 module TypedRuby
   module Signatures
-    class Argument
+    class Argument < BasicObject
       attr_reader :name, :type
 
       def initialize(name:, type:)

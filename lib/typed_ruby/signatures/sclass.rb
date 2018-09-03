@@ -7,11 +7,7 @@ module TypedRuby
         @of = of
         super(
           name: nil,
-          superclass: of.superclass ? of.superclass.sclass : nil,
-          sclass_methods: [],
-          own_methods: [],
-          included_modules: [],
-          prepended_modules: []
+          superclass: of.superclass ? of.superclass.sclass : nil
         )
       end
 

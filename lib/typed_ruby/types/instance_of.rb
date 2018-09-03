@@ -1,18 +1,19 @@
 module TypedRuby
   module Types
     class InstanceOf < Reduced
-      attr_reader :name
+      attr_reader :type
 
-      def initialize(name)
-        @name = name
+      def initialize(type)
+        raise 'type must must be a signature of a class/module' unless Signatures::Module === type
+        @type = type
       end
 
       def ==(other)
-        other.is_a?(InstanceOf) && name == other.name
+        InstanceOf === other && type == other.type
       end
 
       def inspect
-        "InstanceOf(#{name})"
+        "InstanceOf(#{type.inspect})"
       end
     end
   end

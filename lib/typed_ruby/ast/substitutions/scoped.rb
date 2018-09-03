@@ -27,6 +27,10 @@ module TypedRuby
           end
         end
 
+        def me
+          current_module_signature && Types::InstanceOf.new(current_module_signature)
+        end
+
         def in_scope(type:, name:)
           @scope_types << type
           @scope_names << name

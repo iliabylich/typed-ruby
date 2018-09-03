@@ -15,6 +15,8 @@ module TypedRuby
         # substitute_variables!
         substite_sends!
 
+        substite_methods!
+
         @ast
       end
 
@@ -33,7 +35,11 @@ module TypedRuby
       end
 
       def substite_sends!
-        @ast = Substitutions::Send.new(registry: @registry, ast: @ast).call
+        @ast = Substitutions::Sends.new(registry: @registry, ast: @ast).call
+      end
+
+      def substite_methods!
+        @ast = Substitutions::Methods.new(registry: @registry, ast: @ast).call
       end
     end
   end

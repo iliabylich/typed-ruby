@@ -13,7 +13,7 @@ RSpec.describe 'Types: Kernel' do
     it {
       is_expected.to be_defined
         .and take_arguments([])
-        .and return_type(instance_of('Boolean'))
+        .and return_type(instance_of(find_class('Boolean')))
     }
   end
 
@@ -23,7 +23,7 @@ RSpec.describe 'Types: Kernel' do
     it {
       is_expected.to be_defined
         .and take_arguments([])
-        .and return_type(instance_of('Integer'))
+        .and return_type(instance_of(find_class('Integer')))
     }
   end
 end

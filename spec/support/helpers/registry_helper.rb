@@ -25,7 +25,7 @@ module RegistryHelper
 
   matcher :be_defined do
     match do |method_signature|
-      !method_signature.nil?
+      method_signature != nil
     end
   end
 
@@ -44,7 +44,7 @@ module RegistryHelper
 
   matcher :be_any_method do
     match do |method_signature|
-      method_signature.is_a?(TypedRuby::Signatures::AnyMethod)
+      TypedRuby::Signatures::AnyMethod === method_signature
     end
   end
 
@@ -57,6 +57,12 @@ module RegistryHelper
   matcher :have_ancestors do |*expected_ancestors|
     match do |module_signature|
       module_signature.ancestors == expected_ancestors
+    end
+  end
+
+  matcher :have_own_methods do |*expected_own_methods|
+    match do |module_signature|
+      module_signature.own_methods == expected_own_methods
     end
   end
 end

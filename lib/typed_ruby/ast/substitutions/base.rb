@@ -19,6 +19,10 @@ module TypedRuby
           Types::InstanceOf.new(type)
         end
 
+        def find_class(name)
+          @registry.find_class(name)
+        end
+
         def replace(from, to)
           puts "Substitution: #{from} -> #{to.inspect}"
           to
@@ -26,7 +30,7 @@ module TypedRuby
 
         def process(node)
           return if node.nil?
-          return node unless node.is_a?(::Parser::AST::Node)
+          return node unless ::Parser::AST::Node === node
 
           on_handler = :"on_#{node.type}"
           if respond_to? on_handler
@@ -40,6 +44,9 @@ module TypedRuby
           node
         end
 
+        def reduced?(node)
+          Types::Reduced === node
+        end
       end
     end
   end
