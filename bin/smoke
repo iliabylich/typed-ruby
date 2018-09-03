@@ -84,4 +84,4 @@ reducer = TypedRuby::AST::Reducer.new(ast: ast, registry: registry)
 
 result = reducer.result
 
-binding.pry
+puts result

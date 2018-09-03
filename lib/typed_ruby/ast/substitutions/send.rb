@@ -5,6 +5,9 @@ module TypedRuby
         def on_send(node)
           recv, mid, *args = *node
 
+          recv = process(recv)
+          args = process_all(args)
+
           can_reduce = reduced?(recv) && args.all? { |arg| reduced?(arg) }
 
           class_sig = @registry.find_class(recv.name)

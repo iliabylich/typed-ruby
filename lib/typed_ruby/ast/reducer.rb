@@ -6,29 +6,19 @@ module TypedRuby
       def initialize(ast:, registry:)
         @ast = ast
         @registry = registry
-        @reduced = true
       end
 
       def result
         substite_primitives!
         substite_arguments!
-
-        reduce while reduced?
+        # substitute_constants!
+        # substitute_variables!
+        substite_sends!
 
         @ast
       end
 
       private
-
-      def reduce
-        before = @ast
-
-        reduce_sends!
-
-        after = @ast
-
-        @reduced = after != before
-      end
 
       def reduced?
         @reduced
@@ -42,7 +32,7 @@ module TypedRuby
         @ast = Substitutions::Arguments.new(registry: @registry, ast: @ast).call
       end
 
-      def reduce_sends!
+      def substite_sends!
         @ast = Substitutions::Send.new(registry: @registry, ast: @ast).call
       end
     end
