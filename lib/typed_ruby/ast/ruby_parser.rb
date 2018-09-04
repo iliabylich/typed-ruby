@@ -2,7 +2,7 @@ require 'parser/ruby25'
 
 module TypedRuby
   module AST
-    class Parser
+    class RubyParser
       def initialize(file:, source:)
         @parser = ::Parser::Ruby25.new
         @buffer = ::Parser::Source::Buffer.new(file)

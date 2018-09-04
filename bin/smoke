@@ -41,7 +41,7 @@ __A.define_method(
   )
 )
 
-ast = TypedRuby::AST::Parser.new(file: 'eval', source: source).parse
+ast = TypedRuby::AST::RubyParser.new(file: 'eval', source: source).parse
 
 reducer = TypedRuby::AST::Reducer.new(ast: ast, registry: registry)
 

@@ -32,7 +32,7 @@ module TypedRuby
   end
 
   module AST
-    require 'typed_ruby/ast/parser'
+    require 'typed_ruby/ast/ruby_parser'
     require 'typed_ruby/ast/reducer'
 
     module Substitutions
