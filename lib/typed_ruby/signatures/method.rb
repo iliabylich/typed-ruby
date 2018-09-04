@@ -35,7 +35,7 @@ module TypedRuby
       end
 
       def arguments
-        [Arguments::ANY]
+        Arguments::ANY
       end
 
       def returns

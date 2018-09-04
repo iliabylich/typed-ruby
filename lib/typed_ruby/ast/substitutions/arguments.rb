@@ -10,7 +10,7 @@ module TypedRuby
             raise "#{args.loc.expression.to_s}: signature #{method_signature.inspect} doesn't match #{args.loc.expression.source}"
           end
 
-          method_signature.arguments.each do |arg|
+          method_signature.arguments.unwrap.each do |arg|
             body = Substitutions::Explicit.new(
               from: s(:lvar, arg.name.to_sym),
               to:   arg.type

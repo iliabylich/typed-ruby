@@ -1,17 +1,16 @@
 module TypedRuby
   module Signatures
     class Arguments
-      def initialize(list = []) # TODO: kw/block
+      def initialize(list = [])
         @list = list
-
-        # @req = list.grep(Required)
-        # @opt = list.grep(Optional)
-        # @rest = list.grep(Block).first
-        # @post = list.grep(Post)
       end
 
       def inspect
-        @list.map(&:inspect).join(', ')
+        if @list.empty?
+          "-args-"
+        else
+          @list.map(&:inspect).join(', ')
+        end
       end
 
       def unwrap
