@@ -1,5 +1,7 @@
 module TypedRuby
   class Registry
+    attr_reader :modules, :classes, :constants, :gvars
+
     def initialize
       @modules = []
       @classes = []

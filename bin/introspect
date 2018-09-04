@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'typed_ruby'
+require 'pry'
+
+registry = TypedRuby::Registry.new
+
+registry.classes.each do |klass|
+  puts "class #{klass.name}"
+
+  klass.included_modules.each do |mod|
+    puts "  include #{mod.name}"
+  end
+
+  klass.prepended_modules.each do |mod|
+    puts "  prepend #{mod.name}"
+  end
+
+  klass.own_methods.each do |method|
+    puts "  def #{method.name}(#{method.arguments.inspect}): #{method.returns.inspect}"
+  end
+  puts "end"
+end
