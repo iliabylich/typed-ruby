@@ -31,7 +31,7 @@ module TypedRuby
           current_module_signature && Types::InstanceOf.new(current_module_signature)
         end
 
-        def in_scope(type:, name:)
+        def in_signature_scope(type:, name:)
           @scope_types << type
           @scope_names << name
           yield
@@ -43,7 +43,7 @@ module TypedRuby
         def on_class(node)
           const, superclass, body = *node
 
-          in_scope(type: :class, name: Helpers::ConstantName.new(const)) do
+          in_signature_scope(type: :class, name: Helpers::ConstantName.new(const)) do
             super(node)
           end
         end
@@ -51,7 +51,7 @@ module TypedRuby
         def on_module(node)
           const, body = *node
 
-          in_scope(type: :module, name: Helpers::ConstantName.new(const)) do
+          in_signature_scope(type: :module, name: Helpers::ConstantName.new(const)) do
             super(node)
           end
         end

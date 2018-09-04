@@ -3,7 +3,7 @@ module TypedRuby
     class Method
       attr_reader :name, :arguments, :returns, :mod
 
-      def initialize(name:, arguments:, returns:)
+      def initialize(name:, arguments: [], returns:)
         @name = name
         @arguments = Arguments.new(arguments)
         @returns = returns

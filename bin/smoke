@@ -7,45 +7,18 @@ require 'pry'
 registry = TypedRuby::Registry.new
 source = <<-RUBY
 
-  module M
-    def module_method
-      'm'
-    end
-  end
-
   class A
-    # include M
-
-    def instance_method(s)
-      s + 'string'
+    def integer
+      123
     end
 
-    # def self.class_method1
-    #   [1, 2, 3]
-    # end
-
-    # class << self
-    #   def class_method2
-    #     { key: 'value' }
-    #   end
-    # end
+    def double_integer
+      a = integer
+      a + a
+    end
   end
 
 RUBY
-
-registry.register_module(
-  __M = TypedRuby::Signatures::Module.new(
-    name: 'M'
-  )
-)
-
-__M.define_method(
-  TypedRuby::Signatures::Method.new(
-    name: 'module_method',
-    arguments: [],
-    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('String'))
-  )
-)
 
 registry.register_class(
   __A = TypedRuby::Signatures::Class.new(
@@ -54,26 +27,17 @@ registry.register_class(
   )
 )
 
-__A.include(__M)
-
 __A.define_method(
   TypedRuby::Signatures::Method.new(
-    name: 'instance_method',
-    arguments: [
-      TypedRuby::Signatures::Arguments::Required.new(
-        name: 's',
-        type: TypedRuby::Types::InstanceOf.new(registry.find_class('String'))
-      )
-    ],
-    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('String'))
+    name: 'integer',
+    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('Integer'))
   )
 )
 
-__A.define_singleton_method(
+__A.define_method(
   TypedRuby::Signatures::Method.new(
-    name: 'class_method1',
-    arguments: [],
-    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('Array'))
+    name: 'double_integer',
+    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('Integer'))
   )
 )
 

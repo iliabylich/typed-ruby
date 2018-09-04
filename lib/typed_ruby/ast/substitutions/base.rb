@@ -44,6 +44,8 @@ module TypedRuby
           node
         end
 
+        ANY_STMT = Object.new.freeze
+
         def reduced?(node)
           Types::Reduced === node && node != Types::ANY
         end
