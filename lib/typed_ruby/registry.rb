@@ -37,25 +37,25 @@ module TypedRuby
         raise("Class #{class_name} is not registered")
     end
 
+    def load_file(path)
+      instance_eval(File.read(path), path)
+    end
+
     private
 
     def load_builtin
       root = File.expand_path('../../../types', __FILE__)
 
-      load(File.join(root, 'corelib/boot.rb'))
+      load_file(File.join(root, 'corelib/boot.rb'))
 
-      load(File.join(root, 'corelib/basic_object.rb'))
-      load(File.join(root, 'corelib/module.rb'))
-      load(File.join(root, 'corelib/class.rb'))
+      load_file(File.join(root, 'corelib/basic_object.rb'))
+      load_file(File.join(root, 'corelib/module.rb'))
+      load_file(File.join(root, 'corelib/class.rb'))
 
-      load(File.join(root, 'corelib/kernel.rb'))
+      load_file(File.join(root, 'corelib/kernel.rb'))
 
-      load(File.join(root, 'corelib/string.rb'))
-      load(File.join(root, 'corelib/integer.rb'))
-    end
-
-    def load(path)
-      instance_eval(File.read(path), path)
+      load_file(File.join(root, 'corelib/string.rb'))
+      load_file(File.join(root, 'corelib/integer.rb'))
     end
   end
 end
