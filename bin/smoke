@@ -12,34 +12,15 @@ source = <<-RUBY
       123
     end
 
-    def double_integer
+    def double_integer(i)
       a = integer
-      a + a
+      i + i + a
     end
   end
 
 RUBY
 
-registry.register_class(
-  __A = TypedRuby::Signatures::Class.new(
-    name: 'A',
-    superclass: registry.find_class('Object')
-  )
-)
-
-__A.define_method(
-  TypedRuby::Signatures::Method.new(
-    name: 'integer',
-    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('Integer'))
-  )
-)
-
-__A.define_method(
-  TypedRuby::Signatures::Method.new(
-    name: 'double_integer',
-    returns: TypedRuby::Types::InstanceOf.new(registry.find_class('Integer'))
-  )
-)
+registry.load_file('bin/smoke.sig')
 
 ast = TypedRuby::AST::RubyParser.new(file: 'eval', source: source).parse
 

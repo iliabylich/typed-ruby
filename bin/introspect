@@ -5,9 +5,16 @@ require 'typed_ruby'
 require 'pry'
 
 registry = TypedRuby::Registry.new
+registry.load_file('bin/smoke.sig')
 
 registry.classes.each do |klass|
-  puts "class #{klass.name}"
+  print "class #{klass.name}"
+
+  if klass.superclass
+    puts " < #{klass.superclass.name}"
+  else
+    puts
+  end
 
   klass.included_modules.each do |mod|
     puts "  include #{mod.name}"
@@ -18,6 +25,23 @@ registry.classes.each do |klass|
   end
 
   klass.own_methods.each do |method|
+    puts "  def #{method.name}(#{method.arguments.inspect}): #{method.returns.inspect}"
+  end
+  puts "end"
+end
+
+registry.modules.each do |mod|
+  puts "class #{mod.name}"
+
+  mod.included_modules.each do |mod|
+    puts "  include #{mod.name}"
+  end
+
+  mod.prepended_modules.each do |mod|
+    puts "  prepend #{mod.name}"
+  end
+
+  mod.own_methods.each do |method|
     puts "  def #{method.name}(#{method.arguments.inspect}): #{method.returns.inspect}"
   end
   puts "end"

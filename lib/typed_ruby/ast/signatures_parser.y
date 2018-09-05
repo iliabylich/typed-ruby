@@ -1,70 +1,218 @@
 class TypedRuby::AST::SignaturesParser
 
-token kCLASS kMODULE kEND tIDENTIFIER kDEF tCOLON
-      tLPAREN tRPAREN tPIPE tCOMMA tQM tLT tGT tSTAR
-      tMINUS
+token kCLASS kMODULE kEND kDEF kANY_ARGS kANY kINCLUDE kPREPEND
+      tIDENTIFIER tCOLON tLPAREN tRPAREN
+      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tRUBYCODE
 
 rule
 
-      target: # nothing
-            | rules
+                target: # nothing
+                      | rules
 
-       rules: rule
-            | rule rules
+                 rules: rule
+                      | rule rules
 
-        rule: class
-            | module
+                  rule: class
+                      | module
+                      | rubycode
 
-       class: kCLASS tIDENTIFIER         kEND
-            | kCLASS tIDENTIFIER methods kEND
+                 class: class_open              kEND
+                      | class_open module_items kEND
+                        {
+                          @builder.apply_module_items(val[1], on: val[0])
+                        }
 
-      module: kMODULE tIDENTIFIER         kEND
-            | kMODULE tIDENTIFIER methods kEND
+            class_open: kCLASS tIDENTIFIER
+                        {
+                          result = @builder.find_or_create_class(name: val[1])
+                        }
+                      | kCLASS tIDENTIFIER tLT tIDENTIFIER
+                        {
+                          result = @builder.find_or_create_class(name: val[1], superclass: val[3])
+                        }
 
-     methods: method
-            | method methods
+                module: module_open              kEND
+                      | module_open module_items kEND
+                        {
+                          @builder.apply_module_items(val[1], on: val[0])
+                        }
 
-      method: kDEF tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
+           module_open: kMODULE tIDENTIFIER
+                        {
+                          result = @builder.find_or_create_module(name: val[1])
+                        }
 
-        type: tIDENTIFIER
-            | tIDENTIFIER tPIPE  type
-            | tIDENTIFIER tMINUS type
+          module_items: module_item
+                        {
+                          result = [val[0]]
+                        }
+                      | module_item module_items
+                        {
+                          result = [val[0]] + val[1]
+                        }
 
-     arglist: args tCOMMA optargs tCOMMA restarg
-            | args tCOMMA optargs
-            | args tCOMMA optargs tCOMMA
-            | args tCOMMA                restarg
-            | args
-            |             optargs tCOMMA restarg
-            |             optargs
-            |             optargs tCOMMA
-            |                            restarg
-            | # nothing
+           module_item: module_include
+                      | module_prepend
+                      | method
 
-        args: arg
-            | arg args
+                method: kDEF tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
+                        {
+                          result = @builder.method(name: val[1], arguments: val[3], returns: val[6])
+                        }
+                      | kDEF tIDENTIFIER                         tCOLON type
+                        {
+                          result = @builder.method(name: val[1], returns: val[3])
+                        }
 
-         arg: tIDENTIFIER tLT type tGT
+        module_include: kINCLUDE tIDENTIFIER
+                        {
+                          result = @builder.module_include(val[1])
+                        }
 
-     optargs: optarg
-            | optarg optargs
+        module_prepend: kPREPEND tIDENTIFIER
+                        {
+                          result = @builder.module_prepend(val[1])
+                        }
 
-      optarg: tIDENTIFIER tQM tLT type tGT
+                  type: single_type
+                      | single_type tPIPE type
+                        {
+                          result = @builder.union(val[0], val[2])
+                        }
+                      | single_type tMINUS type
+                        {
+                          result = @builder.minus(val[0], val[2])
+                        }
+                      | kANY
+                        {
+                          result = @builder.any_type
+                        }
 
-     restarg: tSTAR tIDENTIFIER tLT type tGT
+           single_type: tIDENTIFIER
+                        {
+                          result = @builder.instance_of(@registry.find_class(val[0]))
+                        }
+
+               arglist: args
+                        {
+                          result = val[0]
+                        }
+                      | kANY_ARGS
+                        {
+                          result = @builder.any_args
+                        }
+                      | # nothing
+                        {
+                          result = []
+                        }
+
+                  args: arg
+                        {
+                          result = [val[0]]
+                        }
+                      | arg tCOMMA args
+                        {
+                          result = [val[0]] + val[2]
+                        }
+
+                   arg: tIDENTIFIER tLT type tGT
+                        {
+                          result = @builder.arg(name: val[0], type: val[2])
+                        }
+                      | tQM tIDENTIFIER tLT type tGT
+                        {
+                          result = @builder.optarg(name: val[1], type: val[3])
+                        }
+                      | tSTAR tIDENTIFIER tLT type tGT
+                        {
+                          result = @builder.restarg(name: val[1], type: val[3])
+                        }
+
+              rubycode: tRUBYCODE
+                        {
+                          @registry.instance_eval(val[0], '__RUBY__')
+                        }
 
 end
 
 ---- header
 
-# require 'typed_ruby/ast/builder'
+require 'typed_ruby/ast/builder'
 
 ---- inner
 
-  def initialize
-    @builder = TypedRuby::AST::Builder.new
+  def initialize(source)
+    @buffer = StringScanner.new(source)
+    # @yydebug = true
   end
 
+  def import_into(registry)
+    @registry = registry
+    @builder = TypedRuby::AST::Builder.new(registry)
+    @queue = []
+    do_parse
+  end
+
+  MAP = {
+    /class\b/         => :kCLASS,
+    /module\b/        => :kMODULE,
+    /end\b/           => :kEND,
+    /def\b/           => :kDEF,
+    /\.\.\./          => :kANY_ARGS,
+    /Any/             => :kANY,
+    /include\b/       => :kINCLUDE,
+    /prepend\b/       => :kPREPEND,
+
+    /:/               => :tCOLON,
+    /\(/              => :tLPAREN,
+    /\)/              => :tRPAREN,
+    /\|/              => :tPIPE,
+    /,/               => :tCOMMA,
+    /\?/              => :tQM,
+
+    /\<\=\>/          => :tIDENTIFIER,
+    /\<\=/            => :tIDENTIFIER,
+    /\>\=/            => :tIDENTIFIER,
+
+    /</               => :tLT,
+    />/               => :tGT,
+    /\*/              => :tSTAR,
+    /-/               => :tMINUS,
+
+    /^__RUBY__$/      => :tRUBYCODE,
+
+    /\!\=/            => :tIDENTIFIER,
+    /\!~/             => :tIDENTIFIER,
+    /\!/              => :tIDENTIFIER,
+    /\=\=\=/          => :tIDENTIFIER,
+    /\=~/             => :tIDENTIFIER,
+    /\=\=/            => :tIDENTIFIER,
+    /\+/              => :tIDENTIFIER,
+    /\w+\?/           => :tIDENTIFIER,
+    /\w+\!/           => :tIDENTIFIER,
+    /\w+\b/           => :tIDENTIFIER,
+  }.freeze
+
   def next_token
-    raise NotImplementedError
+    @buffer.skip(/(\s+|\#.*$)*/)
+
+    _, token_type = MAP.detect { |rule, token| @buffer.scan(rule) }
+
+    if token_type == :tRUBYCODE
+      code = @buffer.scan_until(/^__RUBY__$/).sub('__RUBY__', '')
+      return [:tRUBYCODE, code]
+    end
+
+    if @queue.last == :kDEF && %i[tLT tGT kINCLUDE kPREPEND kCLASS].include?(token_type)
+      return [:tIDENTIFIER, @buffer.matched]
+    end
+
+    @queue << token_type
+
+    if token_type
+      token_value = @buffer.matched
+      [token_type, token_value]
+    else
+      [false, '$end']
+    end
   end

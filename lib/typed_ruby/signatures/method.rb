@@ -11,7 +11,7 @@ module TypedRuby
       end
 
       def inspect
-        "def #{@mod.name} #{name}(#{arguments.inspect}): #{returns.inspect}"
+        "def #{@mod ? @mod.name : '<unbound>'} #{name}(#{arguments.inspect}): #{returns.inspect}"
       end
 
       def bind(mod)

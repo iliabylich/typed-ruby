@@ -4,7 +4,7 @@ require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new(:spec)
 
 task :compile do
-  sh 'racc -o lib/typed_ruby/ast/signatures_parser.rb -O .racc_output lib/typed_ruby/ast/signatures_parser.y'
+  sh 'racc lib/typed_ruby/ast/signatures_parser.y -o lib/typed_ruby/ast/signatures_parser.rb --debug' # -O .racc_output'
 end
 
 task :default => :spec

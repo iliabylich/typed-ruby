@@ -28,17 +28,16 @@ module TypedRuby
     end
 
     def find_module(module_name)
-      @modules.detect { |sig| sig.name == module_name } ||
-        raise("Module #{module_name} is not registered")
+      @modules.detect { |sig| sig.name == module_name }
     end
 
     def find_class(class_name)
-      @classes.detect { |sig| sig.name == class_name } ||
-        raise("Class #{class_name} is not registered")
+      @classes.detect { |sig| sig.name == class_name }
     end
 
     def load_file(path)
-      instance_eval(File.read(path), path)
+      source = File.read(path)
+      AST::SignaturesParser.new(source).import_into(self)
     end
 
     private
@@ -46,16 +45,16 @@ module TypedRuby
     def load_builtin
       root = File.expand_path('../../../types', __FILE__)
 
-      load_file(File.join(root, 'corelib/boot.rb'))
+      load_file(File.join(root, 'corelib/boot.sig'))
 
-      load_file(File.join(root, 'corelib/basic_object.rb'))
-      load_file(File.join(root, 'corelib/module.rb'))
-      load_file(File.join(root, 'corelib/class.rb'))
+      load_file(File.join(root, 'corelib/basic_object.sig'))
+      load_file(File.join(root, 'corelib/module.sig'))
+      load_file(File.join(root, 'corelib/class.sig'))
 
-      load_file(File.join(root, 'corelib/kernel.rb'))
+      load_file(File.join(root, 'corelib/kernel.sig'))
 
-      load_file(File.join(root, 'corelib/string.rb'))
-      load_file(File.join(root, 'corelib/integer.rb'))
+      load_file(File.join(root, 'corelib/string.sig'))
+      load_file(File.join(root, 'corelib/integer.sig'))
     end
   end
 end

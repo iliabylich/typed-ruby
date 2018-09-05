@@ -15,7 +15,7 @@ module TypedRuby
     require 'typed_ruby/signatures/arguments/optional'
     require 'typed_ruby/signatures/arguments/post'
     require 'typed_ruby/signatures/arguments/required'
-    require 'typed_ruby/signatures/arguments/rest'
+    require 'typed_ruby/signatures/arguments/restarg'
 
     require 'typed_ruby/signatures/arguments'
     require 'typed_ruby/signatures/method'
@@ -33,6 +33,7 @@ module TypedRuby
 
   module AST
     require 'typed_ruby/ast/ruby_parser'
+    require 'typed_ruby/ast/signatures_parser'
     require 'typed_ruby/ast/reducer'
 
     module Substitutions

@@ -1,7 +1,7 @@
 module TypedRuby
   module Signatures
     class Arguments
-      class Rest < Base
+      class Restarg < Base
         def inspect
           "*#{name}<#{type.inspect}>"
         end
