@@ -35,3 +35,5 @@ class A
   include M
   prepend N
 end
+
+# def () : Any

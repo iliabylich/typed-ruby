@@ -37,7 +37,7 @@ module TypedRuby
 
     def load_file(path)
       source = File.read(path)
-      AST::SignaturesParser.new(source).import_into(self)
+      AST::SignaturesParser.new(source, path).import_into(self)
     end
 
     private

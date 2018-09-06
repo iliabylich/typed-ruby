@@ -24,11 +24,11 @@ rule
 
             class_open: kCLASS tIDENTIFIER
                         {
-                          result = @builder.find_or_create_class(name: val[1])
+                          result = @builder.find_or_create_class(name_t: val[1])
                         }
                       | kCLASS tIDENTIFIER tLT tIDENTIFIER
                         {
-                          result = @builder.find_or_create_class(name: val[1], superclass: val[3])
+                          result = @builder.find_or_create_class(name_t: val[1], superclass_t: val[3])
                         }
 
                 module: module_open              kEND
@@ -39,7 +39,7 @@ rule
 
            module_open: kMODULE tIDENTIFIER
                         {
-                          result = @builder.find_or_create_module(name: val[1])
+                          result = @builder.find_or_create_module(name_t: val[1])
                         }
 
           module_items: module_item
@@ -57,21 +57,21 @@ rule
 
                 method: kDEF tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
                         {
-                          result = @builder.method(name: val[1], arguments: val[3], returns: val[6])
+                          result = @builder.method(name_t: val[1], arguments: val[3], returns: val[6])
                         }
                       | kDEF tIDENTIFIER                         tCOLON type
                         {
-                          result = @builder.method(name: val[1], returns: val[3])
+                          result = @builder.method(name_t: val[1],                    returns: val[3])
                         }
 
         module_include: kINCLUDE tIDENTIFIER
                         {
-                          result = @builder.module_include(val[1])
+                          result = @builder.module_include(name_t: val[1])
                         }
 
         module_prepend: kPREPEND tIDENTIFIER
                         {
-                          result = @builder.module_prepend(val[1])
+                          result = @builder.module_prepend(name_t: val[1])
                         }
 
                   type: single_type
@@ -90,7 +90,7 @@ rule
 
            single_type: tIDENTIFIER
                         {
-                          result = @builder.instance_of(@registry.find_class(val[0]))
+                          result = @builder.instance_of(name_t: val[0])
                         }
 
                arglist: args
@@ -110,22 +110,22 @@ rule
                         {
                           result = [val[0]]
                         }
-                      | arg tCOMMA args
+                      | args tCOMMA arg
                         {
-                          result = [val[0]] + val[2]
+                          result = val[0] + [val[2]]
                         }
 
                    arg: tIDENTIFIER tLT type tGT
                         {
-                          result = @builder.arg(name: val[0], type: val[2])
+                          result = @builder.arg(name_t: val[0], type: val[2])
                         }
                       | tQM tIDENTIFIER tLT type tGT
                         {
-                          result = @builder.optarg(name: val[1], type: val[3])
+                          result = @builder.optarg(name_t: val[1], type: val[3])
                         }
                       | tSTAR tIDENTIFIER tLT type tGT
                         {
-                          result = @builder.restarg(name: val[1], type: val[3])
+                          result = @builder.restarg(name_t: val[1], type: val[3])
                         }
 
               rubycode: tRUBYCODE
@@ -141,8 +141,9 @@ require 'typed_ruby/ast/builder'
 
 ---- inner
 
-  def initialize(source)
+  def initialize(source, file)
     @buffer = StringScanner.new(source)
+    @file = file
     # @yydebug = true
   end
 
@@ -203,16 +204,47 @@ require 'typed_ruby/ast/builder'
       return [:tRUBYCODE, code]
     end
 
+    token_value = @buffer.matched
+    token_pos   = @buffer.pos
+    token       = [token_value, token_pos]
+
     if @queue.last == :kDEF && %i[tLT tGT kINCLUDE kPREPEND kCLASS].include?(token_type)
-      return [:tIDENTIFIER, @buffer.matched]
+      return [:tIDENTIFIER, token]
     end
 
     @queue << token_type
 
     if token_type
-      token_value = @buffer.matched
-      [token_type, token_value]
+      [token_type, token]
     else
       [false, '$end']
     end
+  end
+
+  SyntaxError = Class.new(StandardError)
+
+  def on_error(error_token_id, error_value, value_stack)
+    error_token = token_to_str(error_token_id)
+    token_value, token_pos = *error_value
+
+    @buffer.pos = token_pos
+    @buffer.pos -=1 until @buffer.beginning_of_line?
+
+    line_start = @buffer.pos
+
+    line = @buffer.scan_until(/$/)
+    lineno = @buffer.string[0..@buffer.pos].count("\n")
+
+    error = SyntaxError.new(<<~MESSAGE)
+
+      Unexpected token #{error_token}:
+
+          #{line}
+          #{' ' * (token_pos - line_start - token_value.length) + '^' * token_value.length}
+
+    MESSAGE
+
+    error.set_backtrace(["#{@file}:#{lineno}"])
+
+    raise error
   end

@@ -5,33 +5,25 @@ module TypedRuby
         @registry = registry
       end
 
-      def instance_of(type)
-        Types::InstanceOf.new(type)
+      def instance_of(name_t:)
+        Types::InstanceOf.new(find_class(name_t: name_t))
       end
 
-      def klass(name:, superclass: nil)
-        Signatures::Class.new(name: name, superclass: superclass)
-      end
-
-      def module(name:)
-        Signatures::Module.new(name: name)
-      end
-
-      def method(name:, arguments: [], returns:)
+      def method(name_t:, arguments: [], returns:)
         arguments = [arguments] if arguments == any_args
-        Signatures::Method.new(name: name, arguments: arguments, returns: returns)
+        Signatures::Method.new(name: value_of(name_t), arguments: arguments, returns: returns)
       end
 
-      def arg(name:, type:)
-        Signatures::Arguments::Required.new(name: name, type: type)
+      def arg(name_t:, type:)
+        Signatures::Arguments::Required.new(name: value_of(name_t), type: type)
       end
 
-      def optarg(name:, type:)
-        Signatures::Arguments::Optional.new(name: name, type: type)
+      def optarg(name_t:, type:)
+        Signatures::Arguments::Optional.new(name: value_of(name_t), type: type)
       end
 
-      def restarg(name:, type:)
-        Signatures::Arguments::Restarg.new(name: name, type: type)
+      def restarg(name_t:, type:)
+        Signatures::Arguments::Restarg.new(name: value_of(name_t), type: type)
       end
 
       def any_args
@@ -52,23 +44,22 @@ module TypedRuby
         prepended_modules.each { |mod| on.prepend(mod) }
       end
 
-      def find_or_create_class(name:, superclass: nil)
-        klass = @registry.find_class(name)
-        superclass = @registry.find_class(superclass)
+      def find_or_create_class(name_t:, superclass_t: [])
+        klass = find_class(name_t: name_t)
 
         if klass.nil?
-          klass = klass(name: name, superclass: superclass)
+          klass = klass(name_t: name_t, superclass_t: superclass_t)
           @registry.register_class(klass)
         end
 
         klass
       end
 
-      def find_or_create_module(name:)
-        mod = @registry.find_module(name)
+      def find_or_create_module(name_t:)
+        mod = find_module(name_t: name_t)
 
         if mod.nil?
-          mod = self.module(name: name)
+          mod = self.module(name_t: name_t)
           @registry.register_module(mod)
         end
 
@@ -78,12 +69,41 @@ module TypedRuby
       ModuleInclude = Struct.new(:mod)
       ModulePrepend = Struct.new(:mod)
 
-      def module_include(mod)
-        ModuleInclude.new(@registry.find_module(mod))
+      def module_include(name_t:)
+        ModuleInclude.new(find_module(name_t: name_t))
       end
 
-      def module_prepend(mod)
-        ModulePrepend.new(@registry.find_module(mod))
+      def module_prepend(name_t:)
+        ModulePrepend.new(find_module(name_t: name_t))
+      end
+
+      protected
+
+      def value_of(tok)
+        tok[0]
+      end
+
+      def pos_of(tok)
+        tok[1]
+      end
+
+      def find_class(name_t:)
+        @registry.find_class(value_of(name_t))
+      end
+
+      def find_module(name_t:)
+        @registry.find_module(value_of(name_t))
+      end
+
+      def klass(name_t:, superclass_t: [])
+        Signatures::Class.new(
+          name: value_of(name_t),
+          superclass: find_class(name_t: superclass_t)
+        )
+      end
+
+      def module(name_t:)
+        Signatures::Module.new(name: value_of(name_t))
       end
     end
   end
