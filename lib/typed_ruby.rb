@@ -31,9 +31,12 @@ module TypedRuby
     require 'typed_ruby/types/instance_of'
   end
 
+  module Parsers
+    require 'typed_ruby/parsers/ruby_parser'
+    require 'typed_ruby/parsers/signatures_parser'
+  end
+
   module AST
-    require 'typed_ruby/ast/ruby_parser'
-    require 'typed_ruby/ast/signatures_parser'
     require 'typed_ruby/ast/reducer'
 
     module Substitutions

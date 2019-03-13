@@ -1,7 +1,7 @@
 require 'parser/ruby25'
 
 module TypedRuby
-  module AST
+  module Parsers
     class RubyParser
       def initialize(file:, source:)
         @parser = ::Parser::Ruby25.new

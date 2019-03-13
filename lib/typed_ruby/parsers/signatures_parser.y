@@ -179,7 +179,7 @@ end
 
 ---- header
 
-require 'typed_ruby/ast/builder'
+require 'typed_ruby/parsers/builder'
 
 ---- inner
 
