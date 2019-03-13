@@ -2,7 +2,7 @@ class TypedRuby::AST::SignaturesParser
 
 token kCLASS kMODULE kEND kDEF kANY_ARGS kANY kINCLUDE kPREPEND
       tIDENTIFIER tCOLON tLPAREN tRPAREN
-      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tRUBYCODE
+      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tAMP tRUBYCODE
 
 rule
 
@@ -53,15 +53,15 @@ rule
 
            module_item: module_include
                       | module_prepend
-                      | method
+                      | method_def
 
-                method: kDEF tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
+            method_def: kDEF tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
                         {
-                          result = @builder.method(name_t: val[1], arguments: val[3], returns: val[6])
+                          result = @builder.method_def(name_t: val[1], arguments: val[3], returns: val[6])
                         }
                       | kDEF tIDENTIFIER                         tCOLON type
                         {
-                          result = @builder.method(name_t: val[1],                    returns: val[3])
+                          result = @builder.method_def(name_t: val[1],                    returns: val[3])
                         }
 
         module_include: kINCLUDE tIDENTIFIER
@@ -115,17 +115,59 @@ rule
                           result = val[0] + [val[2]]
                         }
 
-                   arg: tIDENTIFIER tLT type tGT
+                   arg: required_arg
+                      | opt_arg
+                      | rest_arg
+                      | kwarg
+                      | kwoptarg
+                      | kwrestarg
+                      | blockarg
+
+          required_arg: typed_value
                         {
-                          result = @builder.arg(name_t: val[0], type: val[2])
+                          name_t, type = val[0]
+                          result = @builder.arg(name_t: name_t, type: type)
                         }
-                      | tQM tIDENTIFIER tLT type tGT
+
+               opt_arg: tQM typed_value
                         {
-                          result = @builder.optarg(name_t: val[1], type: val[3])
+                          name_t, type = val[1]
+                          result = @builder.optarg(name_t: name_t, type: type)
                         }
-                      | tSTAR tIDENTIFIER tLT type tGT
+
+              rest_arg: tSTAR typed_value
                         {
-                          result = @builder.restarg(name_t: val[1], type: val[3])
+                          name_t, type = val[1]
+                          result = @builder.restarg(name_t: name_t, type: type)
+                        }
+
+                 kwarg: typed_value tCOLON
+                        {
+                          name_t, type = val[0]
+                          result = @builder.kwarg(name_t: name_t, type: type)
+                        }
+
+              kwoptarg: tQM typed_value tCOLON
+                        {
+                          name_t, type = val[1]
+                          result = @builder.kwoptarg(name_t: name_t, type: type)
+                        }
+
+             kwrestarg: tSTAR tSTAR typed_value
+                        {
+                          name_t, type = val[1]
+                          result = @builder.kwrestarg(name_t: name_t, type: type)
+                        }
+
+              blockarg: tAMP typed_value
+                        {
+                          name_t, type = val[1]
+                          result = @builder.blockarg(name_t: name_t, type: type)
+                        }
+
+           typed_value: tIDENTIFIER tLT type tGT
+                        {
+                          result = [val[0], val[2]]
                         }
 
               rubycode: tRUBYCODE
@@ -170,6 +212,7 @@ require 'typed_ruby/ast/builder'
     /\|/              => :tPIPE,
     /,/               => :tCOMMA,
     /\?/              => :tQM,
+    /&/               => :tAMP,
 
     /\<\=\>/          => :tIDENTIFIER,
     /\<\=/            => :tIDENTIFIER,

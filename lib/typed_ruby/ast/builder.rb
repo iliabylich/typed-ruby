@@ -9,7 +9,7 @@ module TypedRuby
         Types::InstanceOf.new(find_class(name_t: name_t))
       end
 
-      def method(name_t:, arguments: [], returns:)
+      def method_def(name_t:, arguments: [], returns:)
         arguments = [arguments] if arguments == any_args
         Signatures::Method.new(name: value_of(name_t), arguments: arguments, returns: returns)
       end
