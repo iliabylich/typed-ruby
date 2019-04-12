@@ -13,8 +13,11 @@ end
 
 class A
   def integer : Integer
-  def test_sif(x<Integer>, ?y<Integer>, *z<Integer>) : Integer
+  def test_sig(x<Integer>, ?y<Integer>, *z<Integer>) : Integer
   def double_integer(i<Integer>) : Integer
+
+  def sum(a<Integer>, b<Integer>) : Integer
+  def other : Integer
 end
 
 # another comment

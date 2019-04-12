@@ -96,9 +96,16 @@ module TypedRuby
       end
 
       def klass(name_t:, superclass_t: [])
+        name = value_of(name_t)
+        superclass = find_class(name_t: superclass_t)
+
+        if superclass.nil? && name != 'BasicObject'
+          superclass = @registry.find_class('Object')
+        end
+
         Signatures::Class.new(
-          name: value_of(name_t),
-          superclass: find_class(name_t: superclass_t)
+          name: name,
+          superclass: superclass
         )
       end
 

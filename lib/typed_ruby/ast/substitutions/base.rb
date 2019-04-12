@@ -24,7 +24,7 @@ module TypedRuby
         end
 
         def replace(from, to)
-          puts "Substitution: #{from} -> #{to.inspect}"
+          puts "Substitution (#{self.class.name}): #{from} -> #{to.inspect}"
           to
         end
 
@@ -43,8 +43,6 @@ module TypedRuby
 
           node
         end
-
-        ANY_STMT = Object.new.freeze
 
         def reduced?(node)
           Types::Reduced === node && node != Types::ANY

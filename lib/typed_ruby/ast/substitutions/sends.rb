@@ -14,7 +14,7 @@ module TypedRuby
 
           if reduced?(rhs)
             current_lexical_scope[name] = rhs
-            ANY_STMT
+            Types::ANY_STMT
           else
             node
           end

@@ -23,6 +23,10 @@ module TypedRuby
       def inspect
         "SClass<#{of.name}>"
       end
+
+      def name
+        inspect
+      end
     end
   end
 end

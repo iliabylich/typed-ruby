@@ -18,12 +18,30 @@ module TypedRuby
         @mod = mod
       end
 
-      def matches?(ast)
-        @arguments.matches?(ast)
+      def matches_definition?(def_node)
+        if def_node.is_a?(::Parser::AST::Node) && def_node.type == :def
+          mid, args_node, body_node = *def_node
+
+          def_args = args_node.to_a
+          sig_args = arguments.unwrap
+
+          def_args.length == sig_args.length && sig_args.zip(def_args).all? { |sig, arg| sig =~ arg }
+        else
+          raise 'bug: wrong def_node type'
+        end
       end
 
-      def can_receive?(ast)
-        @arguments.can_receive?(ast)
+      def matches_send?(send_node)
+        if send_node.is_a?(::Parser::AST::Node) && send_node.type == :send
+          recv, mid, *args_node = *send_node
+
+          send_args = args_node.to_a
+          sig_args  = arguments.unwrap
+
+          send_args.length == sig_args.length && sig_args.zip(send_args).all? { |sig, arg| sig =~ arg }
+        else
+          raise 'bug: wrong send_node type'
+        end
       end
     end
 

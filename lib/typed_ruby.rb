@@ -27,8 +27,10 @@ module TypedRuby
   module Types
     require 'typed_ruby/types/reduced'
     require 'typed_ruby/types/any'
+    require 'typed_ruby/types/any_stmt'
     require 'typed_ruby/types/void'
     require 'typed_ruby/types/instance_of'
+    require 'typed_ruby/types/unreducable'
   end
 
   module Parsers
@@ -37,8 +39,6 @@ module TypedRuby
   end
 
   module AST
-    require 'typed_ruby/ast/reducer'
-
     module Substitutions
       require 'typed_ruby/ast/substitutions/base'
       require 'typed_ruby/ast/substitutions/scoped'
@@ -49,6 +49,8 @@ module TypedRuby
       require 'typed_ruby/ast/substitutions/sends'
       require 'typed_ruby/ast/substitutions/methods'
     end
+
+    require 'typed_ruby/ast/reducer'
   end
 
   require 'typed_ruby/registry'
