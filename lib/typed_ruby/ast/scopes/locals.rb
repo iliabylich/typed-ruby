@@ -17,7 +17,7 @@ module TypedRuby
         def declare_lvar(name, type)
           name = name.to_s
 
-          if current_scope.has_key?(name)
+          if current_env.has_key?(name)
             raise "Redeclaring a local variable #{name}"
           end
 
@@ -31,12 +31,12 @@ module TypedRuby
         end
 
         def find(name)
-          current_scope[name.to_s]
+          current_env[name.to_s]
         end
 
         private
 
-        def current_scope
+        def current_env
           @stack.last
         end
       end

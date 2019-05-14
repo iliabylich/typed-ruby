@@ -24,6 +24,7 @@ RUBY
 registry.load_file('bin/smoke.sig')
 
 ast = TypedRuby::Parsers::RubyParser.new(file: 'eval', source: source).parse
+puts ast
 
 reducer = TypedRuby::AST::Reducer.new(ast: ast, registry: registry)
 

@@ -10,4 +10,4 @@
 # rspec failure tracking
 .rspec_status
 .racc_output
-lib/typed_ruby/ast/signatures_parser.rb
+lib/typed_ruby/parsers/signatures_parser.rb

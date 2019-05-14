@@ -1,8 +1,8 @@
-class TypedRuby::AST::SignaturesParser
+class TypedRuby::Parsers::SignaturesParser
 
-token kCLASS kMODULE kEND kDEF kANY_ARGS kANY kINCLUDE kPREPEND
+token kCLASS kMODULE kEND kDEF kANY_ARGS kANY kINCLUDE kPREPEND kSELF
       tIDENTIFIER tCOLON tLPAREN tRPAREN
-      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tAMP tRUBYCODE
+      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tAMP tDOT tRUBYCODE
 
 rule
 
@@ -55,13 +55,21 @@ rule
                       | module_prepend
                       | method_def
 
-            method_def: kDEF tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
+            method_def: kDEF            tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
                         {
                           result = @builder.method_def(name_t: val[1], arguments: val[3], returns: val[6])
                         }
-                      | kDEF tIDENTIFIER                         tCOLON type
+                      | kDEF            tIDENTIFIER                         tCOLON type
                         {
                           result = @builder.method_def(name_t: val[1],                    returns: val[3])
+                        }
+                      | kDEF kSELF tDOT tIDENTIFIER tLPAREN arglist tRPAREN tCOLON type
+                        {
+                          result = @builder.method_def(name_t: val[3], arguments: val[5], returns: val[8])
+                        }
+                      | kDEF kSELF tDOT tIDENTIFIER                         tCOLON type
+                        {
+                          result = @builder.method_def(name_t: val[3],                    returns: val[5])
                         }
 
         module_include: kINCLUDE tIDENTIFIER
@@ -205,12 +213,14 @@ require 'typed_ruby/parsers/builder'
     /Any/             => :kANY,
     /include\b/       => :kINCLUDE,
     /prepend\b/       => :kPREPEND,
+    /self\b/          => :kSELF,
 
     /:/               => :tCOLON,
     /\(/              => :tLPAREN,
     /\)/              => :tRPAREN,
     /\|/              => :tPIPE,
     /,/               => :tCOMMA,
+    /\./              => :tDOT,
     /\?/              => :tQM,
     /&/               => :tAMP,
 
@@ -269,6 +279,8 @@ require 'typed_ruby/parsers/builder'
   def on_error(error_token_id, error_value, value_stack)
     error_token = token_to_str(error_token_id)
     token_value, token_pos = *error_value
+
+    raise SyntaxError.new("Unexpected $end") if error_token == '$end'
 
     @buffer.pos = token_pos
     @buffer.pos -=1 until @buffer.beginning_of_line?

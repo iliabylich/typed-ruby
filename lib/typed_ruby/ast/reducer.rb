@@ -110,10 +110,9 @@ module TypedRuby
           recv = instance_of(current_module)
         end
 
-        method_sig = recv.type.find_method(mid.to_s) rescue binding.pry
+        method_sig = recv.type.find_method(mid.to_s)
 
         if method_sig.nil?
-          binding.pry
           raise "Unknown method #{recv.type.inspect}##{mid}"
         end
 
