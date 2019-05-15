@@ -1,10 +1,12 @@
 module TypedRuby
   module Signatures
     class Class < Module
-      attr_reader :superclass
+      attr_reader :superclass, :ivars
 
       def initialize(superclass:, **kwrest)
         @superclass = superclass
+        @ivars = []
+
         super(kwrest)
 
         define_default_allocator
@@ -17,6 +19,14 @@ module TypedRuby
           *included_modules.flat_map(&:ancestors),
           *(superclass ? superclass.ancestors : [])
         ]
+      end
+
+      def define_ivar(ivar_sig)
+        @ivars << ivar_sig
+      end
+
+      def find_ivar(ivar_name)
+        @ivars.detect { |ivar| ivar.name == ivar_name.to_s }
       end
 
       def inspect

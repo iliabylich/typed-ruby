@@ -2,7 +2,7 @@ class TypedRuby::Parsers::SignaturesParser
 
 token kCLASS kMODULE kEND kDEF kANY_ARGS kANY kINCLUDE kPREPEND kSELF kVOID
       tIDENTIFIER tCOLON tLPAREN tRPAREN
-      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tAMP tDOT tRUBYCODE
+      tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tAMP tDOT tRUBYCODE tAT
 
 rule
 
@@ -54,6 +54,7 @@ rule
            module_item: module_include
                       | module_prepend
                       | method_def
+                      | ivar_def
 
             method_def: kDEF            tIDENTIFIER tLPAREN arglist tRPAREN tCOLON return_type
                         {
@@ -184,6 +185,16 @@ rule
                           result = [val[0], val[2]]
                         }
 
+             ivar_name: tAT tIDENTIFIER
+                        {
+                          result = val[1]
+                        }
+
+              ivar_def: ivar_name tCOLON type
+                        {
+                          result = @builder.ivar(name_t: val[0], type: val[2])
+                        }
+
               rubycode: tRUBYCODE
                         {
                           @registry.instance_eval(val[0], '__RUBY__')
@@ -299,6 +310,8 @@ require 'strscan'
         emit(:tSTAR)
       elsif @buffer.scan(/-/)
         emit(:tMINUS)
+      elsif @buffer.scan(/@/)
+        emit(:tAT)
       else
         break
       end

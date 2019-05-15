@@ -8,8 +8,13 @@ registry = TypedRuby::Registry
 source = <<-RUBY
 
   class A
+    def initialize(x)
+      @x = x
+    end
+
     def sum(a, b)
-      a + b + other
+      c = 3
+      @x.to_i + a + b + c + other
     end
 
     def other
@@ -17,7 +22,7 @@ source = <<-RUBY
     end
   end
 
-  A.new.sum(5, 6)
+  A.new("a").sum(5, 6)
 
 RUBY
 

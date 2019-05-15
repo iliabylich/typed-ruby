@@ -44,10 +44,12 @@ module TypedRuby
         included_modules  = items.grep(ModuleInclude).map(&:mod)
         prepended_modules = items.grep(ModulePrepend).map(&:mod)
         methods           = items.grep(Signatures::Method)
+        ivars             = items.grep(Signatures::Ivar)
 
         methods.each { |method| on.define_method(method) }
         included_modules.each { |mod| on.include(mod) }
         prepended_modules.each { |mod| on.prepend(mod) }
+        ivars.each { |ivar| on.define_ivar(ivar) }
       end
 
       def find_or_create_class(name_t:, superclass_t: [])
@@ -83,12 +85,8 @@ module TypedRuby
         ModulePrepend.new(find_module(name_t: name_t))
       end
 
-      def args_of_method((type, name))
-        Signatures::Arguments::LocalLink.new(type, name)
-      end
-
-      def return_value_of((type, name))
-        Signatures::ReturnValueOf.new(type, name)
+      def ivar(name_t:, type:)
+        Signatures::Ivar.new(name: value_of(name_t), type: type)
       end
 
       protected

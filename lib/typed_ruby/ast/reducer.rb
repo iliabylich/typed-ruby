@@ -26,7 +26,7 @@ module TypedRuby
         process(@ast)
       end
 
-      (instance_methods.grep(/on_/) - [:on_argument]).each do |mid|
+      (instance_methods.grep(/\Aon_/) - [:on_argument, :on_vasgn]).each do |mid|
         define_method(mid) do |*|
           raise NotImplementedError, mid.to_s
         end
@@ -92,7 +92,7 @@ module TypedRuby
             reduced = super
             _, _, body = *reduced
 
-            if body.reduced?
+            if body.nil? || body.reduced?
               replace(reduced, Types::ANY_STMT)
             end
           end
@@ -104,6 +104,10 @@ module TypedRuby
 
       def on_int(node)
         replace(node, instance_of(find_class('Integer')))
+      end
+
+      def on_str(node)
+        replace(node, instance_of(find_class('String')))
       end
 
       def on_send(node)
@@ -128,9 +132,35 @@ module TypedRuby
         end
       end
 
+      def on_lvasgn(node)
+        name, value = *super
+
+        @locals.declare_lvar(name, value)
+      end
+
       def on_lvar(node)
         name, _ = *node
         type = @locals.find(name)
+        replace(node, type)
+      end
+
+      def on_ivasgn(node)
+        name, value = *super
+
+        ivar_def = current_module.find_ivar(name[1..-1])
+        acceptable_type = ivar_def.type
+
+        if value <= acceptable_type
+          Types::ANY_STMT
+        else
+          raise "#{value.inspect} can't be assigned to #{ivar_def.inspect}"
+        end
+      end
+
+      def on_ivar(node)
+        name, = *node
+        ivar_def = current_module.find_ivar(name[1..-1])
+        type = ivar_def.type
         replace(node, type)
       end
 
@@ -162,7 +192,7 @@ module TypedRuby
         if respond_to? on_handler
           new_node = send on_handler, node
         else
-          new_node = handler_missing(node)
+          raise NotImplementedError, on_handler
         end
 
         node = new_node if new_node

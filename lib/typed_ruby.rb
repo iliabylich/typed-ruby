@@ -23,6 +23,7 @@ module TypedRuby
     require 'typed_ruby/signatures/class'
     require 'typed_ruby/signatures/sclass'
     require 'typed_ruby/signatures/return_value'
+    require 'typed_ruby/signatures/ivar'
   end
 
   module Types

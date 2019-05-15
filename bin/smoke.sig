@@ -12,6 +12,9 @@ class Integer
 end
 
 class A
+  @x: String
+
+  def initialize(x<String>) : void
   def integer : Integer
   def test_sig(x<Integer>, ?y<Integer>, *z<Integer>) : Integer
   def double_integer(i<Integer>) : Integer
