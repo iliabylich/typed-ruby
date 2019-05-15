@@ -14,14 +14,6 @@ module TypedRuby
         @locals         = Scopes::Locals.new
       end
 
-      SUBSTITUTIONS = [
-        # Substitutions::Primitives,
-        # Substitutions::Constants,
-        # Substitutions::LocalVariables,
-        # Substitutions::InstanceVariables,
-        # Substitutions::Sends,
-      ]
-
       def result
         process(@ast)
       end

@@ -3,7 +3,6 @@ require "typed_ruby/version"
 module TypedRuby
   module Helpers
     require 'typed_ruby/helpers/constant_name'
-    require 'typed_ruby/helpers/reduced_arglist'
   end
 
   module Signatures
@@ -41,17 +40,6 @@ module TypedRuby
   end
 
   module AST
-    module Substitutions
-      require 'typed_ruby/ast/substitutions/base'
-      require 'typed_ruby/ast/substitutions/scoped'
-
-      require 'typed_ruby/ast/substitutions/primitives'
-      require 'typed_ruby/ast/substitutions/arguments'
-      require 'typed_ruby/ast/substitutions/explicit'
-      require 'typed_ruby/ast/substitutions/sends'
-      require 'typed_ruby/ast/substitutions/methods'
-    end
-
     require 'typed_ruby/ast/reducer'
   end
 
