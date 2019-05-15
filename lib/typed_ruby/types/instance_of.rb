@@ -4,7 +4,10 @@ module TypedRuby
       attr_reader :type
 
       def initialize(type)
-        raise 'type must must be a signature of a class/module' unless Signatures::Module === type
+        unless type.is_a?(Signatures::Module)
+          raise "type must be a signature of a class/module, got #{type.inspect}"
+        end
+
         @type = type
       end
 

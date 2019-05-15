@@ -39,8 +39,7 @@ module TypedRuby
         if reduced_stmts.all?(&:reduced?)
           replace(reduced, Types::ANY_STMT)
         else
-          unreducables = reduced_stmts.reject(&:reduced?)
-          # Types::Unreducable.new(node, )
+          report(reduced_stmts.reject(&:reduced?))
         end
       end
 
@@ -58,7 +57,13 @@ module TypedRuby
 
       def on_class(node)
         @module_nesting.in_class(node) do
-          super
+          const, superclass, body = *node
+          body = process(body)
+          if body.reduced?
+            Types::ANY_STMT
+          else
+            raise "Unreducable: #{body}"
+          end
         end
       end
 
@@ -77,7 +82,7 @@ module TypedRuby
         end
 
         unless method_sig.matches_definition?(node)
-          raise "#{node} doesn't match defined signature #{method_sig}"
+          raise "#{node} doesn't match defined signature #{method_sig.inspect}"
         end
 
         @module_nesting.in_def(node) do
@@ -119,7 +124,7 @@ module TypedRuby
         if method_sig.matches_send?(node)
           replace(node, method_sig.returns)
         else
-          raise "#{node} doesn't match defined signature #{method_sig}"
+          raise "#{node} doesn't match defined signature #{method_sig.inspect}"
         end
       end
 
@@ -132,7 +137,8 @@ module TypedRuby
       private
 
       def replace(from, to)
-        puts "Substitution (#{self.class.name}): #{from} -> #{to.inspect}"
+        called_from = caller_locations(1,1)[0]
+        puts "Substitution (#{called_from.label}:#{called_from.lineno}) (#{self.class.name}): #{from} -> #{to.inspect}"
         to
       end
 
@@ -166,6 +172,11 @@ module TypedRuby
 
       def current_module
         @registry.find_class(@module_nesting.current_name)
+      end
+
+      def report(nodes)
+        puts "The following nodes can't be reduced:"
+        nodes.each { |node| puts node }
       end
     end
   end

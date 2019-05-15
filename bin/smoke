@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'typed_ruby'
 require 'pry'
+require 'typed_ruby'
 
-registry = TypedRuby::Registry.new
+registry = TypedRuby::Registry
 source = <<-RUBY
 
   class A

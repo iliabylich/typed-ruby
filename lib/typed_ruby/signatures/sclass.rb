@@ -27,6 +27,12 @@ module TypedRuby
       def name
         inspect
       end
+
+      private
+
+      def define_default_allocator
+        # singleton classes don't have allocators
+      end
     end
   end
 end

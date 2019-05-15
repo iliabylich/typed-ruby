@@ -6,6 +6,8 @@ module TypedRuby
       def initialize(superclass:, **kwrest)
         @superclass = superclass
         super(kwrest)
+
+        define_default_allocator
       end
 
       def ancestors
@@ -19,6 +21,26 @@ module TypedRuby
 
       def inspect
         "ClassType<#{name}>"
+      end
+
+      private
+
+      def define_default_allocator
+        sclass.define_method(
+          Method.new(
+            name: 'allocate',
+            arguments: Arguments.new([]),
+            returns: ReturnValue.new(Types::InstanceOf.new(self))
+          )
+        )
+
+        sclass.define_method(
+          Method.new(
+            name: 'new',
+            arguments: Arguments::Of.new(self, 'initialize'),
+            returns: ReturnValue::Of.new(sclass, 'allocate')
+          )
+        )
       end
     end
   end

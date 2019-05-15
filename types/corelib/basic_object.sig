@@ -13,4 +13,6 @@ class BasicObject
   def method_missing(...) : Any
   def singleton_method_added(...) : Any
   def singleton_method_removed(...) : Any
+
+  def initialize() : void
 end

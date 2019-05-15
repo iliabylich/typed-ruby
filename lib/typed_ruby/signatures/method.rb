@@ -3,11 +3,19 @@ module TypedRuby
     class Method
       attr_reader :name, :arguments, :returns, :mod
 
-      def initialize(name:, arguments: [], returns:)
+      def initialize(name:, arguments:, returns:)
         @name = name
-        @arguments = Arguments.new(arguments)
+        @arguments = arguments
         @returns = returns
         @mod = nil
+      end
+
+      def arguments
+        @arguments.unwrap
+      end
+
+      def returns
+        @returns.unwrap
       end
 
       def inspect
@@ -23,7 +31,7 @@ module TypedRuby
           mid, args_node, body_node = *def_node
 
           def_args = args_node.to_a
-          sig_args = arguments.unwrap
+          sig_args = arguments
 
           def_args.length == sig_args.length && sig_args.zip(def_args).all? { |sig, arg| sig =~ arg }
         else
@@ -33,10 +41,11 @@ module TypedRuby
 
       def matches_send?(send_node)
         if send_node.is_a?(::Parser::AST::Node) && send_node.type == :send
+          # binding.pry
           recv, mid, *args_node = *send_node
 
           send_args = args_node.to_a
-          sig_args  = arguments.unwrap
+          sig_args  = arguments
 
           send_args.length == sig_args.length && sig_args.zip(send_args).all? { |sig, arg| sig =~ arg }
         else

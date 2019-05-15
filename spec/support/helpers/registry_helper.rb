@@ -1,5 +1,5 @@
 module RegistryHelper
-  REGISTRY = TypedRuby::Registry.new
+  REGISTRY = TypedRuby::Registry
 
   def find_class(class_name)
     REGISTRY.find_class(class_name)

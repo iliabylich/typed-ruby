@@ -25,7 +25,7 @@ module TypedRuby
         end
 
         def enter_method(method_sig)
-          method_sig.arguments.unwrap.each do |arg_sig|
+          method_sig.arguments.each do |arg_sig|
             declare_lvar(arg_sig.name, arg_sig.type)
           end
         end

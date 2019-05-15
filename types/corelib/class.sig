@@ -1,6 +1,6 @@
 class Class
-  def self.new : Class
-  def new : Class
-  def allocate : Class
+  def self.allocate : Class
+  def initialize(?superclass<Class>) : void
+
   def superclass : Class
 end

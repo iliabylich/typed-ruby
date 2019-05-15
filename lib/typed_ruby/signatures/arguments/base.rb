@@ -12,6 +12,10 @@ module TypedRuby
         def =~(*)
           raise NotImplementedError, "=~ is missing on #{self.class}"
         end
+
+        def unwrap
+          self
+        end
       end
     end
   end

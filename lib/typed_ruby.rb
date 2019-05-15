@@ -22,6 +22,7 @@ module TypedRuby
     require 'typed_ruby/signatures/module'
     require 'typed_ruby/signatures/class'
     require 'typed_ruby/signatures/sclass'
+    require 'typed_ruby/signatures/return_value'
   end
 
   module Types

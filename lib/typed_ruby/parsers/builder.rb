@@ -11,6 +11,8 @@ module TypedRuby
 
       def method_def(name_t:, arguments: [], returns:)
         arguments = [arguments] if arguments == any_args
+        arguments = Signatures::Arguments.new(arguments)
+        returns   = Signatures::ReturnValue.new(returns)
         Signatures::Method.new(name: value_of(name_t), arguments: arguments, returns: returns)
       end
 
@@ -32,6 +34,10 @@ module TypedRuby
 
       def any_type
         Types::ANY
+      end
+
+      def void
+        Types::VOID
       end
 
       def apply_module_items(items, on:)
@@ -75,6 +81,14 @@ module TypedRuby
 
       def module_prepend(name_t:)
         ModulePrepend.new(find_module(name_t: name_t))
+      end
+
+      def args_of_method((type, name))
+        Signatures::Arguments::LocalLink.new(type, name)
+      end
+
+      def return_value_of((type, name))
+        Signatures::ReturnValueOf.new(type, name)
       end
 
       protected
