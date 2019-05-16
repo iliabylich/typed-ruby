@@ -4,17 +4,25 @@
 
 
 class Integer
-  def m(...) : Any
 end
 
 class Integer
-  def reoponed(...) : Any
+  def to_i : Integer
 end
 
-class A
-  @x: String
+class Boolean
+  def to_i : Integer
+end
 
-  def initialize(x<String>) : void
+Type Str = String
+Type Int = Integer
+Type Bool = Boolean
+Type StrOrIntOrBool = Str | Int | Bool
+
+class A
+  @x: StrOrIntOrBool
+
+  def initialize(x<Str | Int>) : void
   def integer : Integer
   def test_sig(x<Integer>, ?y<Integer>, *z<Integer>) : Integer
   def double_integer(i<Integer>) : Integer

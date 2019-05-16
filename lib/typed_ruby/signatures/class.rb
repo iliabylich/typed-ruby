@@ -30,7 +30,7 @@ module TypedRuby
       end
 
       def inspect
-        "ClassType<#{name}>"
+        "class<#{name}>"
       end
 
       private

@@ -6,15 +6,8 @@ module TypedRuby
           "#{name}<#{type.inspect}>"
         end
 
-        def =~(other)
-          case other
-          when ::Parser::AST::Node
-            other.type == :arg
-          when Types::Reduced
-            type >= other
-          else
-            raise 'bug'
-          end
+        def matches_ast?(other)
+          other.type == :arg
         end
       end
     end

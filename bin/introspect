@@ -25,7 +25,7 @@ registry.classes.each do |klass|
   end
 
   klass.own_methods.each do |method|
-    puts "  def #{method.name}(#{method.arguments.inspect}): #{method.returns.inspect}"
+    puts "  def #{method.name}(#{method.arguments.map(&:inspect).join(', ')}): #{method.returns.inspect}"
   end
   puts "end"
 end
@@ -42,7 +42,7 @@ registry.modules.each do |mod|
   end
 
   mod.own_methods.each do |method|
-    puts "  def #{method.name}(#{method.arguments.inspect}): #{method.returns.inspect}"
+    puts "  def #{method.name}(#{method.arguments.map(&:inspect).join(', ')}): #{method.returns.inspect}"
   end
   puts "end"
 end

@@ -102,6 +102,14 @@ module TypedRuby
         replace(node, instance_of(find_class('String')))
       end
 
+      def on_true(node)
+        replace(node, instance_of(find_class('Boolean')))
+      end
+
+      def on_false(node)
+        replace(node, instance_of(find_class('Boolean')))
+      end
+
       def on_send(node)
         node = super
         # TODO: add validation
@@ -111,10 +119,10 @@ module TypedRuby
           recv = instance_of(current_module)
         end
 
-        method_sig = recv.type.find_method(mid.to_s)
+        method_sig = recv.find_method(mid.to_s)
 
         if method_sig.nil?
-          raise "Unknown method #{recv.type.inspect}##{mid}"
+          raise "Unknown method #{recv.inspect}##{mid}"
         end
 
         if method_sig.matches_send?(node)
@@ -128,6 +136,8 @@ module TypedRuby
         name, value = *super
 
         @locals.declare_lvar(name, value)
+
+        replace(node, Types::ANY_STMT)
       end
 
       def on_lvar(node)
@@ -137,15 +147,15 @@ module TypedRuby
       end
 
       def on_ivasgn(node)
-        name, value = *super
+        name, value_type = *super
 
         ivar_def = current_module.find_ivar(name[1..-1])
         acceptable_type = ivar_def.type
 
-        if value <= acceptable_type
-          Types::ANY_STMT
+        if value_type.can_be_assigned_to?(acceptable_type)
+          replace(node, Types::ANY_STMT)
         else
-          raise "#{value.inspect} can't be assigned to #{ivar_def.inspect}"
+          raise "#{value_type.inspect} can't be assigned to #{ivar_def.inspect}"
         end
       end
 

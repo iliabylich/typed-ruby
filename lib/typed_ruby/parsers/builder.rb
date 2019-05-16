@@ -5,8 +5,16 @@ module TypedRuby
         @registry = registry
       end
 
-      def instance_of(name_t:)
-        Types::InstanceOf.new(find_class(name_t: name_t))
+      def instance_of(type_t:)
+        if klass = find_class(name_t: type_t)
+          return Types::InstanceOf.new(klass)
+        end
+
+        if type = @registry.find_type(value_of(type_t))
+          return type
+        end
+
+        (binding.pry; [:no_type, type_t])
       end
 
       def method_def(name_t:, arguments: [], returns:)
@@ -87,6 +95,10 @@ module TypedRuby
 
       def ivar(name_t:, type:)
         Signatures::Ivar.new(name: value_of(name_t), type: type)
+      end
+
+      def union(left, right)
+        Types::Union.new(left, right)
       end
 
       protected

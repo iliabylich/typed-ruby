@@ -1,38 +1,40 @@
 module TypedRuby
   module Types
     class InstanceOf < Reduced
-      attr_reader :type
+      attr_reader :klass
 
-      def initialize(type)
-        unless type.is_a?(Signatures::Module)
-          raise "type must be a signature of a class/module, got #{type.inspect}"
+      # @type TypeOf
+      def initialize(klass)
+        case klass
+        when Signatures::Class
+          @klass = klass
+        else
+          raise "argument must be a signature of a class/unions, got #{definition.inspect}"
         end
-
-        @type = type
       end
 
       def ==(other)
-        InstanceOf === other && type == other.type
+        other.is_a?(InstanceOf) && klass == other.klass
       end
 
       def inspect
-        "InstanceOf(#{type.name})"
+        "InstanceOf(#{klass.inspect})"
       end
 
-      def >=(other)
-        self.type >= other.type
+      def can_be_assigned_to?(other)
+        case other
+        when InstanceOf
+          klass.can_be_assigned_to?(other.klass)
+        when Union
+          can_be_assigned_to?(other.left) ||
+          can_be_assigned_to?(other.right)
+        else
+          raise "argument must be InstanceOf or Union"
+        end
       end
 
-      def >(other)
-        self.type > other.type
-      end
-
-      def <=(other)
-        self.type <= other.type
-      end
-
-      def <(other)
-        self.type < other.type
+      def find_method(method_name)
+        @klass.find_method(method_name)
       end
     end
   end

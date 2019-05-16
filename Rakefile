@@ -5,7 +5,7 @@ RSpec::Core::RakeTask.new(:spec)
 
 desc 'Compile .y => .rb'
 task :compile do
-  sh 'racc lib/typed_ruby/parsers/signatures_parser.y -o lib/typed_ruby/parsers/signatures_parser.rb --debug'# -O .racc_output'
+  sh 'racc lib/typed_ruby/parsers/signatures_parser.y -o lib/typed_ruby/parsers/signatures_parser.rb --debug -O .racc_output'
 end
 
 task :default => :spec

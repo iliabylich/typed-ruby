@@ -25,6 +25,8 @@ module TypedRuby
     require 'typed_ruby/signatures/ivar'
   end
 
+  require 'typed_ruby/type'
+
   module Types
     require 'typed_ruby/types/reduced'
     require 'typed_ruby/types/any'
@@ -32,6 +34,7 @@ module TypedRuby
     require 'typed_ruby/types/void'
     require 'typed_ruby/types/instance_of'
     require 'typed_ruby/types/unreducable'
+    require 'typed_ruby/types/union'
   end
 
   module Parsers

@@ -10,7 +10,7 @@ module TypedRuby
         end
 
         def =~(*)
-          raise NotImplementedError, "=~ is missing on #{self.class}"
+          raise "deprecated"
         end
 
         def unwrap

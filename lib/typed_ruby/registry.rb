@@ -4,9 +4,10 @@ module TypedRuby
     @classes = []
     @constants = []
     @gvars = []
+    @types = {}
 
     class << self
-      attr_reader :modules, :classes, :constants, :gvars
+      attr_reader :modules, :classes, :constants, :gvars, :types
 
       def register_module(sig)
         @modules << sig
@@ -24,12 +25,20 @@ module TypedRuby
         @gvars << sig
       end
 
+      def register_type(name:, type:)
+        @types[name] = type
+      end
+
       def find_module(module_name)
         @modules.detect { |sig| sig.name == module_name }
       end
 
       def find_class(class_name)
         @classes.detect { |sig| sig.name == class_name }
+      end
+
+      def find_type(name)
+        @types[name]
       end
 
       def load_file(path)

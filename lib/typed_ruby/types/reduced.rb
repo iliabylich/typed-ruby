@@ -1,10 +1,6 @@
 module TypedRuby
   module Types
-    class Reduced
-      def =~(other)
-        raise NotImplementedError, "no =~ in the #{self.class}"
-      end
-
+    class Reduced < Type
       def reduced?
         true
       end

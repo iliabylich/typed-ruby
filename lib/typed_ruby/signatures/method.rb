@@ -19,7 +19,7 @@ module TypedRuby
       end
 
       def inspect
-        "def #{@mod ? @mod.name : '<unbound>'} #{name}(#{@arguments.inspect}): #{returns.inspect}"
+        "def #{@mod ? @mod.name : '<unbound>'} #{name}(#{arguments.map(&:inspect).join(', ')}): #{returns.inspect}"
       end
 
       def bind(mod)
@@ -33,7 +33,7 @@ module TypedRuby
           def_args = args_node.to_a
           sig_args = arguments
 
-          def_args.length == sig_args.length && sig_args.zip(def_args).all? { |sig, arg| sig =~ arg }
+          def_args.length == sig_args.length && sig_args.zip(def_args).all? { |sig, arg| sig.matches_ast?(arg) }
         else
           raise 'bug: wrong def_node type'
         end
@@ -41,13 +41,14 @@ module TypedRuby
 
       def matches_send?(send_node)
         if send_node.is_a?(::Parser::AST::Node) && send_node.type == :send
-          # binding.pry
           recv, mid, *args_node = *send_node
 
           send_args = args_node.to_a
           sig_args  = arguments
 
-          send_args.length == sig_args.length && sig_args.zip(send_args).all? { |sig, arg| sig =~ arg }
+          r = send_args.length == sig_args.length && send_args.zip(sig_args).all? { |arg, sig| arg.can_be_assigned_to?(sig.type) }
+          binding.pry unless r
+          r
         else
           raise 'bug: wrong send_node type'
         end

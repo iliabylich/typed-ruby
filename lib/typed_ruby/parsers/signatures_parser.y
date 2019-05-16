@@ -3,6 +3,11 @@ class TypedRuby::Parsers::SignaturesParser
 token kCLASS kMODULE kEND kDEF kANY_ARGS kANY kINCLUDE kPREPEND kSELF kVOID
       tIDENTIFIER tCOLON tLPAREN tRPAREN
       tPIPE tMINUS tCOMMA tQM tLT tGT tSTAR tAMP tDOT tRUBYCODE tAT
+      kTYPE tEQ
+
+prechigh
+  left tPIPE tMINUS
+preclow
 
 rule
 
@@ -15,6 +20,7 @@ rule
                   rule: class
                       | module
                       | rubycode
+                      | typedef
 
                  class: class_open              kEND
                       | class_open module_items kEND
@@ -83,12 +89,15 @@ rule
                           result = @builder.module_prepend(name_t: val[1])
                         }
 
-                  type: single_type
-                      | single_type tPIPE type
+                  type: tIDENTIFIER
+                        {
+                          result = @builder.instance_of(type_t: val[0])
+                        }
+                      | type tPIPE type
                         {
                           result = @builder.union(val[0], val[2])
                         }
-                      | single_type tMINUS type
+                      | type tMINUS type
                         {
                           result = @builder.minus(val[0], val[2])
                         }
@@ -101,11 +110,6 @@ rule
                       | kVOID
                         {
                           result = @builder.void
-                        }
-
-           single_type: tIDENTIFIER
-                        {
-                          result = @builder.instance_of(name_t: val[0])
                         }
 
                arglist: args
@@ -200,6 +204,11 @@ rule
                           @registry.instance_eval(val[0], '__RUBY__')
                         }
 
+               typedef: kTYPE tIDENTIFIER tEQ type
+                        {
+                          @registry.register_type(name: val[1][0], type: val[3])
+                        }
+
 end
 
 ---- header
@@ -281,6 +290,8 @@ require 'strscan'
         emit(:kSELF)
       elsif @buffer.scan(/void\b/)
         emit(:kVOID)
+      elsif @buffer.scan(/Type\b/)
+        emit(:kTYPE)
       elsif @buffer.scan(/^__RUBY__$/)
         code = @buffer.scan_until(/^__RUBY__$/).sub('__RUBY__', '')
         emit(:tRUBYCODE, code)
@@ -312,6 +323,8 @@ require 'strscan'
         emit(:tMINUS)
       elsif @buffer.scan(/@/)
         emit(:tAT)
+      elsif @buffer.scan(/=/)
+        emit(:tEQ)
       else
         break
       end
