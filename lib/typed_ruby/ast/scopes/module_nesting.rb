@@ -37,10 +37,17 @@ module TypedRuby
         end
 
         def current_name
-          @stack
-            .select { |item| item.is_a?(ClassEntry) || item.is_a?(ModuleEntry) }
-            .map(&:name)
-            .join('::')
+          name = @stack
+                      .select { |item| item.is_a?(ClassEntry) || item.is_a?(ModuleEntry) }
+                      .map(&:name)
+                      .join('::')
+
+          # global context
+          if name == ''
+            name = 'Object'
+          end
+
+          name
         end
 
         def in_class?

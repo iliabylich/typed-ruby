@@ -3,7 +3,7 @@ module TypedRuby
     class Arguments
       class Optional < Base
         def inspect
-          "?#{name}<#{type.inspect}>"
+          "#{type.inspect} #{name} = _"
         end
       end
     end

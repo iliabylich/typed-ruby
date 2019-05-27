@@ -25,20 +25,21 @@ module TypedRuby
       end
 
       def on_begin(node)
-        reduced = super
-        reduced_stmts = *reduced
+        node = super
+        stmts = *node
 
-        if reduced_stmts.all?(&:reduced?)
-          replace(reduced, Types::ANY_STMT)
+        unreducable = stmts.grep(Parser::AST::Node)
+        if unreducable.empty?
+          replace(node, Types::ANY_STMT)
         else
-          report(reduced_stmts.reject(&:reduced?))
+          report(unreducable)
         end
       end
 
       def on_const(node)
         scope, name = *super
 
-        if class_sig = find_class(name.to_s)
+        if class_sig = find_type(name.to_s)
           type = instance_of(class_sig.sclass)
           replace(node, type)
         else
@@ -51,7 +52,7 @@ module TypedRuby
         @module_nesting.in_class(node) do
           const, superclass, body = *node
           body = process(body)
-          if body.reduced?
+          if body == Types::ANY_STMT
             Types::ANY_STMT
           else
             raise "Unreducable: #{body}"
@@ -84,7 +85,7 @@ module TypedRuby
             reduced = super
             _, _, body = *reduced
 
-            if body.nil? || body.reduced?
+            if body.nil? || body == Types::ANY_STMT || body.is_a?(Types::InstanceOf)
               replace(reduced, Types::ANY_STMT)
             end
           end
@@ -95,19 +96,19 @@ module TypedRuby
       def on_arg(node); super; end
 
       def on_int(node)
-        replace(node, instance_of(find_class('Integer')))
+        replace(node, instance_of(find_type('Integer')))
       end
 
       def on_str(node)
-        replace(node, instance_of(find_class('String')))
+        replace(node, instance_of(find_type('String')))
       end
 
       def on_true(node)
-        replace(node, instance_of(find_class('Boolean')))
+        replace(node, instance_of(find_type('Boolean')))
       end
 
       def on_false(node)
-        replace(node, instance_of(find_class('Boolean')))
+        replace(node, instance_of(find_type('Boolean')))
       end
 
       def on_send(node)
@@ -126,7 +127,7 @@ module TypedRuby
         end
 
         if method_sig.matches_send?(node)
-          replace(node, method_sig.returns)
+          replace(node, method_sig.returns.type)
         else
           raise "#{node} doesn't match defined signature #{method_sig.inspect}"
         end
@@ -182,8 +183,8 @@ module TypedRuby
         Types::InstanceOf.new(type)
       end
 
-      def find_class(name)
-        @registry.find_class(name)
+      def find_type(name)
+        @registry.find_type(name)
       end
 
       def process(node)
@@ -203,7 +204,7 @@ module TypedRuby
       end
 
       def current_module
-        @registry.find_class(@module_nesting.current_name)
+        @registry.find_type(@module_nesting.current_name)
       end
 
       def report(nodes)

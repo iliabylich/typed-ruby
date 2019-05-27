@@ -1,3 +1,3 @@
 class Integer
-  def +(other<Integer>) : Integer
+  def +(Integer other) : Integer
 end

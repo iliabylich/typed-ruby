@@ -1,7 +1,13 @@
 module TypedRuby
   module Types
-    class Any < Reduced
+    class Any < ::TypedRuby::Type
+      def initialize; end
+
       def inspect
+        "Any"
+      end
+
+      def name
         "Any"
       end
     end

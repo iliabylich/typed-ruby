@@ -1,48 +1,84 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'typed_ruby'
 require 'pry'
+require 'typed_ruby'
 
 registry = TypedRuby::Registry
 registry.load_file('bin/smoke.sig')
 
-registry.classes.each do |klass|
-  print "class #{klass.name}"
-
-  if klass.superclass
-    puts " < #{klass.superclass.name}"
-  else
-    puts
+def print_ivars(klass)
+  klass.ivars.each do |ivar|
+    puts "  @#{ivar.name} : #{ivar.type.inspect}"
   end
-
-  klass.included_modules.each do |mod|
-    puts "  include #{mod.name}"
-  end
-
-  klass.prepended_modules.each do |mod|
-    puts "  prepend #{mod.name}"
-  end
-
-  klass.own_methods.each do |method|
-    puts "  def #{method.name}(#{method.arguments.map(&:inspect).join(', ')}): #{method.returns.inspect}"
-  end
-  puts "end"
+  puts if klass.ivars.any?
 end
 
-registry.modules.each do |mod|
-  puts "class #{mod.name}"
-
-  mod.included_modules.each do |mod|
-    puts "  include #{mod.name}"
-  end
-
-  mod.prepended_modules.each do |mod|
-    puts "  prepend #{mod.name}"
-  end
-
+def print_methods(mod)
   mod.own_methods.each do |method|
-    puts "  def #{method.name}(#{method.arguments.map(&:inspect).join(', ')}): #{method.returns.inspect}"
+    puts "  def #{method.name}(#{method.arguments.inspect}) : #{method.returns.inspect}"
   end
-  puts "end"
+end
+
+registry.types.each_value do |type|
+  case type
+  when TypedRuby::Signatures::Class
+    print "class #{type.name}"
+    if type.superclass
+      puts " < #{type.superclass.name}"
+    else
+      puts
+    end
+
+    print_ivars(type)
+    print_methods(type)
+
+    puts "end"
+  when TypedRuby::Signatures::Module
+    puts "module #{type.name}"
+    print_methods(type)
+    puts "end"
+  else
+    # binding.pry
+  end
+
+#   print "class #{klass.name}"
+
+#   if klass.superclass
+#     puts " < #{klass.superclass.name}"
+#   else
+#     puts
+#   end
+
+#   klass.included_modules.each do |mod|
+#     puts "  include #{mod.name}"
+#   end
+
+#   klass.prepended_modules.each do |mod|
+#     puts "  prepend #{mod.name}"
+#   end
+
+#   klass.own_methods.each do |method|
+#     puts "  def #{method.name}(#{method.arguments.map(&:inspect).join(', ')}): #{method.returns.inspect}"
+#   end
+#   puts "end"
+# end
+
+# registry.modules.each do |mod|
+#   puts "class #{mod.name}"
+
+#   mod.included_modules.each do |mod|
+#     puts "  include #{mod.name}"
+#   end
+
+#   mod.prepended_modules.each do |mod|
+#     puts "  prepend #{mod.name}"
+#   end
+
+#   mod.own_methods.each do |method|
+#     puts "  def #{method.name}(#{method.arguments.map(&:inspect).join(', ')}): #{method.returns.inspect}"
+#   end
+#   puts "end"
+# end
+
 end

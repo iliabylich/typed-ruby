@@ -10,16 +10,8 @@ module TypedRuby
         @mod = nil
       end
 
-      def arguments
-        @arguments.unwrap
-      end
-
-      def returns
-        @returns.unwrap
-      end
-
       def inspect
-        "def #{@mod ? @mod.name : '<unbound>'} #{name}(#{arguments.map(&:inspect).join(', ')}): #{returns.inspect}"
+        "def #{@mod ? @mod.name : '<unbound>'} #{name}(#{arguments.inspect}): #{returns.inspect}"
       end
 
       def bind(mod)
@@ -33,7 +25,7 @@ module TypedRuby
           def_args = args_node.to_a
           sig_args = arguments
 
-          def_args.length == sig_args.length && sig_args.zip(def_args).all? { |sig, arg| sig.matches_ast?(arg) }
+          sig_args.matches_ast?(def_args)
         else
           raise 'bug: wrong def_node type'
         end
@@ -46,9 +38,7 @@ module TypedRuby
           send_args = args_node.to_a
           sig_args  = arguments
 
-          r = send_args.length == sig_args.length && send_args.zip(sig_args).all? { |arg, sig| arg.can_be_assigned_to?(sig.type) }
-          binding.pry unless r
-          r
+          sig_args.matches_send?(send_args)
         else
           raise 'bug: wrong send_node type'
         end

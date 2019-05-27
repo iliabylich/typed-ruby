@@ -3,7 +3,7 @@ module TypedRuby
     class Arguments
       class Restarg < Base
         def inspect
-          "*#{name}<#{type.inspect}>"
+          "#{type.inspect} *#{name}"
         end
       end
     end

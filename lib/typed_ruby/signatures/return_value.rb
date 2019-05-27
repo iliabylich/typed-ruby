@@ -1,30 +1,36 @@
 module TypedRuby
   module Signatures
-    class ReturnValue
+    class ReturnValue < ::TypedRuby::Type
+      attr_reader :type
+
       def initialize(type)
         @type = type
-      end
-
-      def unwrap
-        @type
       end
 
       def inspect
         "ReturnValue<#{@type.inspect}>"
       end
 
+      def find_method(method_name)
+        @type.find_method(method_name)
+      end
+
       class Of < self
-        def initialize(type, method_name)
-          @type = type
-          @method_name = method_name
+        def initialize(type_of, method_name_of)
+          @type_of = type_of
+          @method_name_of = method_name_of
         end
 
-        def unwrap
-          @type.find_method(@method_name).returns
+        def type
+          @type_of.find_method(@method_name_of).returns
+        end
+
+        def find_method(method_name)
+          type.find_method(method_name)
         end
 
         def inspect
-          "ReturnValueOf<#{@type.inspect}##{@method_name}>"
+          "ReturnValueOf<#{@type_of.inspect}##{@method_name_of}>"
         end
       end
     end

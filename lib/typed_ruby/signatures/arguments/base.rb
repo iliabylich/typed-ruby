@@ -8,14 +8,6 @@ module TypedRuby
           @name = name
           @type = type
         end
-
-        def =~(*)
-          raise "deprecated"
-        end
-
-        def unwrap
-          self
-        end
       end
     end
   end

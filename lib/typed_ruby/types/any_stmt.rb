@@ -1,6 +1,6 @@
 module TypedRuby
   module Types
-    class AnyStmt < Reduced
+    class AnyStmt
       def inspect
         "ANY_STMT"
       end

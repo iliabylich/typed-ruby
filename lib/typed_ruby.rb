@@ -5,6 +5,8 @@ module TypedRuby
     require 'typed_ruby/helpers/constant_name'
   end
 
+  require 'typed_ruby/type'
+
   module Signatures
     require 'typed_ruby/signatures/arguments/base'
     require 'typed_ruby/signatures/arguments/block'
@@ -25,21 +27,19 @@ module TypedRuby
     require 'typed_ruby/signatures/ivar'
   end
 
-  require 'typed_ruby/type'
-
   module Types
-    require 'typed_ruby/types/reduced'
     require 'typed_ruby/types/any'
     require 'typed_ruby/types/any_stmt'
     require 'typed_ruby/types/void'
     require 'typed_ruby/types/instance_of'
     require 'typed_ruby/types/unreducable'
-    require 'typed_ruby/types/union'
+    require 'typed_ruby/types/intersection'
   end
 
   module Parsers
     require 'typed_ruby/parsers/ruby_parser'
     require 'typed_ruby/parsers/signatures_parser'
+    require 'typed_ruby/parsers/visitor'
   end
 
   module AST

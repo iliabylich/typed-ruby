@@ -22,7 +22,10 @@ source = <<-RUBY
     end
   end
 
-  A.new("a").sum(5, 6)
+  a = A.new("a")
+  puts a.sum(5, 6)
+
+  # puts a.test_generics(['1', '2'])
 
 RUBY
 

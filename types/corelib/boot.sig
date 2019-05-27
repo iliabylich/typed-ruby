@@ -15,8 +15,8 @@ end
 
 __RUBY__
 
-  __BasicObject = find_class('BasicObject')
-  __Class       = find_class('Class')
+  __BasicObject = find_type('BasicObject')
+  __Class       = find_type('Class')
 
   __BasicObject.sclass.instance_eval { @superclass = __Class }
 

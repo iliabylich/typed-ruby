@@ -1,4 +1,4 @@
 class String
-  def +(other<String>) : String
-  def to_i(): Integer
+  def +(String other): String
+  def to_i : Integer
 end
